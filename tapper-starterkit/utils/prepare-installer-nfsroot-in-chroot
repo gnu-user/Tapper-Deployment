@@ -74,8 +74,27 @@ echo "reload index" | $CPAN
 $CPAN LWP
 $CPAN Expect
 
-# the actual Tapper::Installer
-$CPAN Tapper::Installer
+# the actual Tapper libs
+
+TAPPERMODULES=Tapper::Installer
+# build from CPAN (which solves dependencies)
+# and optionally again from git
+for module in $TAPPERMODULES ; do
+    $CPAN $module
+done
+if [ "x1" == "x$TAPPERFROMGIT" ] ; then
+    for module in $TAPPERMODULES ; do
+        dist=$(echo $module | sed -e 's/-/::/g')
+        cd /tmp/
+        rm -fr $dist
+        git clone git://wotan/$dist
+        cd $dist
+        perl Makefile.PL
+        make
+        prove -vlm -c t/*.t && make install
+    done
+fi
+
 cp /tmp/tapper-starterkit/etc/init.d/tapper /etc/init.d/tapper
 chmod +x /etc/init.d/tapper
 insserv tapper

@@ -26,7 +26,22 @@ export CPAN=/opt/tapper/perl/perls/current/bin/cpan
 echo "reload index" | $CPAN
 $CPAN LWP
 $CPAN Expect
-$CPAN Tapper::PRC
-$CPAN Tapper::Installer
-$CPAN Tapper::TestSuite::AutoTest
-$CPAN Tapper::TestSuite::HWTrack
+
+TAPPERMODULES="Tapper::PRC Tapper::Installer Tapper::TestSuite::AutoTest Tapper::TestSuite::HWTrack"
+# build from CPAN (which solves dependencies)
+# and optionally from git on top
+for module in $TAPPERMODULES ; do
+    $CPAN $module
+done
+if [ "x1" == "x$TAPPERFROMGIT" ] ; then
+    for module in $TAPPERMODULES ; do
+        dist=$(echo $module | sed -e 's/-/::/g')
+        cd /tmp/
+        rm -fr $dist
+        git clone git://wotan/$dist
+        cd $dist
+        perl Makefile.PL
+        make
+        prove -vlm -c t/*.t && make install
+    done
+fi

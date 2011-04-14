@@ -31,6 +31,19 @@
 # 
 #########################################################
 
+# ===== OSRC specific defaults =====
+
+#DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
+DEBIANMIRROR ?= http://alzey/debian/
+
+# install Tapper libs from Git repositories
+TAPPERFROMGIT ?= 0
+
+# use local starterkit instead of amd64.org
+LOCALSTARTERKIT ?= 1
+
+# ===== General configuration =====
+
 TMP=/tmp
 
 DATATAPPER      = /data/tapper
@@ -56,9 +69,6 @@ TFTPBOOTDIR     = $(DATATAPPER)/live/configs/tftpboot
 SYNCDIR         = $(DATATAPPER)/live/sync
 # network bootable OS image
 NFSROOTDIR      = $(DATATAPPER)/live/nfsroot
-
-DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
-#DEBIANMIRROR=http://alzey/debian/
 
 # installer NFS root
 # 64bit always
@@ -238,7 +248,12 @@ $(STARTERKITDIR)/etc/log4perl.cfg:
 	$(APTGET) install rsync
 	$(APTGET) install gcc
 	$(APTGET) install perl-modules
+ifeq ($(LOCALSTARTERKIT),1)
+	cd .. ; tar -czf $(STARTERKIT).tgz $(STARTERKIT)/
+	cp $(STARTERKIT).tgz $(TMP)/$(STARTERKIT)
+else
 	curl -z$(TMP)/$(STARTERKIT) -L $(STARTERKITURL) -o $(TMP)/$(STARTERKIT)
+endif
 	cd $(TMP) ; tar xzf $(STARTERKIT)
 
 
@@ -334,7 +349,7 @@ $(INSTALLERNFSROOT)/etc/log4perl.cfg:
 	cp $(STARTERKITDIR)/utils/$(INSTALLERCHROOTPREPARE) $(INSTALLERCHROOT)/
 	cp $(TMP)/$(STARTERKIT) $(INSTALLERCHROOT)/tmp/
 	chmod +x $(INSTALLERCHROOT)/$(INSTALLERCHROOTPREPARE)
-	chroot $(INSTALLERCHROOT) /$(INSTALLERCHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /$(INSTALLERCHROOTPREPARE)
 	rm -f $(INSTALLERCHROOT)/$(INSTALLERCHROOTPREPARE)
 	rm $(INSTALLERCHROOT)/tmp/$(STARTERKIT)
 
@@ -422,7 +437,7 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	cp $(STARTERKITDIR)/utils/$(BASEIMAGE64CHROOTPREPARE) $(BASEIMAGE64CHROOT)/
 	cp $(TMP)/$(STARTERKIT) $(BASEIMAGE64CHROOT)/tmp/
 	chmod +x $(BASEIMAGE64CHROOT)/$(BASEIMAGE64CHROOTPREPARE)
-	chroot $(BASEIMAGE64CHROOT) /$(BASEIMAGE64CHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(BASEIMAGE64CHROOT) /$(BASEIMAGE64CHROOTPREPARE)
 	rm -f $(BASEIMAGE64CHROOT)/$(BASEIMAGE64CHROOTPREPARE)
 	rm $(BASEIMAGE64CHROOT)/tmp/$(STARTERKIT)
 
@@ -454,7 +469,7 @@ $(CLIENTPKG64FILE): baseimage64file
 
 	cp $(STARTERKITDIR)/utils/$(CLIENTPKG64CHROOTPREPARE) $(CLIENTPKG64CHROOT)/
 	chmod +x $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
-	chroot $(CLIENTPKG64CHROOT) /$(CLIENTPKG64CHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG64CHROOT) /$(CLIENTPKG64CHROOTPREPARE)
 	rm -f $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
