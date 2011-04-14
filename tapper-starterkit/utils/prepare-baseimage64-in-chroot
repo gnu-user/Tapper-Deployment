@@ -32,6 +32,7 @@ apt-get --yes --allow-unauthenticated install nfs-common
 apt-get --yes --allow-unauthenticated install lshw
 apt-get --yes --allow-unauthenticated install grub-legacy
 apt-get --yes --allow-unauthenticated install initramfs-tools
+apt-get --yes --allow-unauthenticated install git
 
 # dependencies for Perl libs
 apt-get --yes --allow-unauthenticated install expect
