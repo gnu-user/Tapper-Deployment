@@ -84,7 +84,7 @@ for module in $TAPPERMODULES ; do
 done
 if [ "x1" == "x$TAPPERFROMGIT" ] ; then
     for module in $TAPPERMODULES ; do
-        dist=$(echo $module | sed -e 's/-/::/g')
+        dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/
         rm -fr $dist
         git clone git://wotan/$dist
