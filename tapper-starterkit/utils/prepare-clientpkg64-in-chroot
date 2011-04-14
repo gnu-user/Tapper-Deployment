@@ -59,6 +59,7 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         cd $dist
         perl Makefile.PL
         make
-        prove -vlm -c t/*.t && make install
+        make test
+        make install
     done
 fi
