@@ -242,9 +242,7 @@ $(DISTROPREFSDIR)/00.README:
 
 dependencies: distroprefs starterkit
 
-starterkit: $(STARTERKITDIR)/etc/log4perl.cfg
-
-$(STARTERKITDIR)/etc/log4perl.cfg:
+starterkit:
 	@echo "########## install some build dependencies"
 	$(APTGET) update
 	$(APTGET) install debootstrap
