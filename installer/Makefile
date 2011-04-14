@@ -80,16 +80,16 @@ INSTALLERCHROOTPREPARE=prepare-installer-nfsroot-in-chroot
 # baseimage
 # 64bit
 BASEIMAGE64FILE=$(IMAGESDIR)/debian_base64.tgz
-BASEIMAGE64CHROOT=/mnt/chroot/squeeze-tapper-nfsroot-for-baseimage64
+BASEIMAGE64CHROOT=/mnt/chroot/squeeze-tapper-baseimage64
 BASEIMAGE64CHROOTPREPARE=prepare-baseimage64-in-chroot
 # 32bit
 BASEIMAGE32=$(IMAGESDIR)/debian_base32.tgz
-BASEIMAGE32CHROOT=/mnt/chroot/squeeze-tapper-nfsroot-for-baseimage32
+BASEIMAGE32CHROOT=/mnt/chroot/squeeze-tapper-baseimage32
 BASEIMAGE32CHROOTPREPARE=prepare-baseimage32-in-chroot
 
 # client package
 # 64bit
-CLIENTPKG64FILE=$(TAPPERUTILSDIR)/opt-tapper64.tar.gz
+CLIENTPKG64FILE=$(TAPPERUTILSDIR)/$(TIMESTAMP)-opt-tapper64.tar.gz
 CLIENTPKG64CHROOT=/mnt/chroot/squeeze-tapper-clientpkg64
 CLIENTPKG64CHROOTPREPARE=prepare-clientpkg64-in-chroot
 # 32bit
@@ -210,7 +210,10 @@ cleanbaseimage64chroot:
 	-rm -fr $(BASEIMAGE64CHROOT)
 
 cleanbaseimage64file:
-	-rm -fr $(BASEIMAGE64FILE)
+	-rm -f $(BASEIMAGE64FILE)
+
+cleanstarterkit:
+	-rm -f $(STARTERKITDIR)/etc/log4perl.cfg
 
 cleandb:
 	-echo "drop database testrundb; drop database reportsdb; drop user tapper;" | mysql -uroot -p$${MYSQL_ROOT_PW}
