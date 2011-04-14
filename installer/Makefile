@@ -33,11 +33,13 @@
 
 # ===== OSRC specific defaults =====
 
+TIMESTAMP := `date +%Y%m%d-%H-%M`
+
 #DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
 DEBIANMIRROR ?= http://alzey/debian/
 
 # install Tapper libs from Git repositories
-TAPPERFROMGIT ?= 0
+TAPPERFROMGIT ?= 1
 
 # use local starterkit instead of amd64.org
 LOCALSTARTERKIT ?= 1
@@ -235,7 +237,9 @@ $(DISTROPREFSDIR)/00.README:
 # fix non-fitting distroprefs
 	perl -pni -e 's/disabled: +1/disabled: 0/' $(DISTROPREFSDIR)/PARDUS.File-MimeInfo.yml
 
-dependencies: distroprefs $(STARTERKITDIR)/etc/log4perl.cfg
+dependencies: distroprefs starterkit
+
+starterkit: $(STARTERKITDIR)/etc/log4perl.cfg
 
 $(STARTERKITDIR)/etc/log4perl.cfg:
 	@echo "########## install some build dependencies"
@@ -249,8 +253,7 @@ $(STARTERKITDIR)/etc/log4perl.cfg:
 	$(APTGET) install gcc
 	$(APTGET) install perl-modules
 ifeq ($(LOCALSTARTERKIT),1)
-	cd .. ; tar -czf $(STARTERKIT).tgz $(STARTERKIT)/
-	cp $(STARTERKIT).tgz $(TMP)/$(STARTERKIT)
+	cd .. ; tar -czf $(STARTERKIT) $(STARTERKITBASENAME)/ ; cp $(STARTERKIT) $(TMP)/$(STARTERKIT)
 else
 	curl -z$(TMP)/$(STARTERKIT) -L $(STARTERKITURL) -o $(TMP)/$(STARTERKIT)
 endif
