@@ -2,9 +2,9 @@
 
 set -x
 
-# config
+# ==================== config ====================
 
-PREFIX=/opt/tapper/python
+PYTHONPREFIX=/opt/tapper/python
 PYTHONVERSION=2.6.6
 PYTHONTGZ=Python-${PYTHONVERSION}.tgz
 PYTHONURL=http://www.python.org/ftp/python/${PYTHONVERSION}/${PYTHONTGZ}
@@ -18,23 +18,24 @@ EASYINSTALLURL=http://pypi.python.org/packages/source/s/setuptools/${EASYINSTALL
 #apt-get --yes --allow-unauthenticated install python-setuptools
 
 
-# Python
+# ==================== Python ====================
 
 cd /tmp
 wget -nd -N $PYTHONURL
 tar xzf $PYTHONTGZ
 cd Python-$PYTHONVERSION
-#make distclean
-#./configure --prefix=${PREFIX}
-#make -j6
-##make test
-#make install
+make distclean
+./configure --prefix=${PYTHONPREFIX}
+make -j16
+#make test
+make install
 
-# EasyInstall
+# ==================== EasyInstall ====================
 
 cd /tmp
 wget -nd -N $EASYINSTALLURL
 tar xzf $EASYINSTALLTGZ
-#sh $EASYINSTALLEGG --prefix=${PREFIX}
+#sh $EASYINSTALLEGG --prefix=${PYTHONPREFIX}
 cd ${EASYINSTALL}
-${PREFIX}/bin/python setup.py install
+${PYTHONPREFIX}/bin/python setup.py install
+

@@ -57,6 +57,8 @@ OUTPUTDIR       = $(DATATAPPER)/live/output
 IMAGESDIR       = $(DATATAPPER)/live/repository/images
 # packages
 PACKAGESDIR     = $(DATATAPPER)/live/repository/packages
+# packages
+PYTHONREPODIR   = $(DATATAPPER)/live/repository/pythonrepo
 # Tapper clientlib
 TAPPERUTILSDIR  = $(DATATAPPER)/live/repository/packages/tapperutils
 # test programs
@@ -111,6 +113,11 @@ DISTROPREFSDIR=/root/.cpan/prefs
 PERLBIN=/opt/tapper/perl/perls/current/bin
 CPAN=$(PERLBIN)/cpan
 PERL=$(PERLBIN)/perl
+
+### Python setup
+PYTHONDIR=/opt/tapper/python
+PYTHONBIN=$(PYTHONDIR)/bin
+PYTHONPREPARE=prepare-optpython
 
 # Debian automatic install
 APTGETOPTIONS=-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --yes
@@ -215,6 +222,9 @@ cleanbaseimage64file:
 cleanstarterkit:
 	-rm -f $(STARTERKITDIR)/etc/log4perl.cfg
 
+cleanoptpython:
+	-rm -fr $(PYTHONDIR)
+
 cleandb:
 	-echo "drop database testrundb; drop database reportsdb; drop user tapper;" | mysql -uroot -p$${MYSQL_ROOT_PW}
 
@@ -253,6 +263,7 @@ starterkit:
 	$(APTGET) install rsync
 	$(APTGET) install gcc
 	$(APTGET) install perl-modules
+	$(APTGET) install libsqlite3-dev
 ifeq ($(LOCALSTARTERKIT),1)
 	cd .. ; tar -czf $(STARTERKIT) $(STARTERKITBASENAME)/ ; cp $(STARTERKIT) $(TMP)/$(STARTERKIT)
 else
@@ -401,6 +412,7 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	echo 'export TEST_JOBS=$$CPUCOUNT'             >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'export PERL_AUTOINSTALL="--defaultdeps"' >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'export PERLBREW_ROOT=/opt/tapper/perl'   >> $(BASEIMAGE64CHROOT)/root/.bashrc
+	echo 'export PATH=/opt/tapper/python/bin:$${PATH}' >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'export TWMC_TEST_PORT=9876'              >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'alias dir="ls -Flart --color"'           >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'rm="rm -i"'                              >> $(BASEIMAGE64CHROOT)/root/.bashrc
@@ -472,6 +484,9 @@ $(CLIENTPKG64FILE): baseimage64file
 	mount -t devpts devpts $(CLIENTPKG64CHROOT)/dev/pts
 
 	cp $(STARTERKITDIR)/utils/$(CLIENTPKG64CHROOTPREPARE) $(CLIENTPKG64CHROOT)/
+	cp $(STARTERKITDIR)/utils/$(PYTHONPREPARE) $(CLIENTPKG64CHROOT)/
+	mkdir -p $(CLIENTPKG64CHROOT)/pythonrepo
+	rsync -r $(PYTHONREPODIR)/ $(CLIENTPKG64CHROOT)/pythonrepo/
 	chmod +x $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG64CHROOT) /$(CLIENTPKG64CHROOTPREPARE)
 	rm -f $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
@@ -545,6 +560,21 @@ $(PERLBIN)/perl:
 	@echo "########## Install Perl"
 #	chmod +x $(STARTERKITDIR)/utils/prepare-optperl
 	$(STARTERKITDIR)/utils/prepare-optperl
+
+optpython: dependencies $(PYTHONBIN)/python
+
+$(PYTHONBIN)/python:
+#
+# Install Python
+#
+	@echo "########## Install Python"
+	$(STARTERKITDIR)/utils/$(PYTHONPREPARE)
+
+temare: optpython
+#
+# Install temare
+#
+	$(PYTHONBIN)/easy_install $(PYTHONREPODIR)/temare-1.000004-py2.6.egg
 
 nfsserver:
 #
@@ -752,7 +782,7 @@ testquery: receiver
 
 localsetup: workingdirs dependencies \
             tapperconfig \
-            libdeps optperl perlpkgs \
+            libdeps optperl perlpkgs optpython \
             databases examplemachines \
             receiver web api \
             testreport \

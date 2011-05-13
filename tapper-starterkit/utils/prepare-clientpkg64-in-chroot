@@ -1,5 +1,10 @@
 #! /bin/bash
 
+set -x
+
+export TAPPERFROMGIT=1 # default in OSRC, we only call that script to get bleeding edge
+PYTHONPREFIX=/opt/tapper/python
+
 # ===========================================================
 
 # currently we rely Perl already built in baseimage
@@ -63,3 +68,13 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         make install
     done
 fi
+
+# ==================== Python ====================
+
+/prepare-optpython
+
+# ==================== Python test suites ====================
+
+for pkg in `find /pythonrepo/ -type f` ; do
+    ${PYTHONPREFIX}/bin/easy_install $pkg
+done
