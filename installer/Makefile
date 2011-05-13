@@ -445,6 +445,11 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	echo 'rm="rm -i"'                              >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'cp="cp -i"'                              >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'mv="mv -i"'                              >> $(BASEIMAGE64CHROOT)/root/.bashrc
+	mkdir -p $(BASEIMAGE64CHROOT)/root/.ssh
+	cat /root/.ssh/id_dsa.pub >> $(BASEIMAGE64CHROOT)/root/.ssh/authorized_keys
+	cat /root/.ssh/id_rsa.pub >> $(BASEIMAGE64CHROOT)/root/.ssh/authorized_keys
+	chmod 600 $(BASEIMAGE64CHROOT)/root/.ssh/authorized_keys
+	chmod 700 $(BASEIMAGE64CHROOT)/root/.ssh
 #
 ### Perl/CPAN setup
 #
