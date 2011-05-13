@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -x
+
 # for parallel builds
 export CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`
 

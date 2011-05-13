@@ -33,8 +33,6 @@
 
 # ===== OSRC specific defaults =====
 
-TIMESTAMP := `date +%Y%m%d-%H-%M`
-
 #DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
 DEBIANMIRROR ?= http://alzey/debian/
 
@@ -85,13 +83,13 @@ BASEIMAGE64FILE=$(IMAGESDIR)/debian_base64.tgz
 BASEIMAGE64CHROOT=/mnt/chroot/squeeze-tapper-baseimage64
 BASEIMAGE64CHROOTPREPARE=prepare-baseimage64-in-chroot
 # 32bit
-BASEIMAGE32=$(IMAGESDIR)/debian_base32.tgz
+BASEIMAGE32FILE=$(IMAGESDIR)/debian_base32.tgz
 BASEIMAGE32CHROOT=/mnt/chroot/squeeze-tapper-baseimage32
 BASEIMAGE32CHROOTPREPARE=prepare-baseimage32-in-chroot
 
 # client package
 # 64bit
-CLIENTPKG64FILE=$(TAPPERUTILSDIR)/$(TIMESTAMP)-opt-tapper64.tar.gz
+CLIENTPKG64FILE=$(TAPPERUTILSDIR)/opt-tapper64.tar.gz
 CLIENTPKG64CHROOT=/mnt/chroot/squeeze-tapper-clientpkg64
 CLIENTPKG64CHROOTPREPARE=prepare-clientpkg64-in-chroot
 # 32bit
@@ -136,7 +134,9 @@ CLEANFILES = $(TMP)/$(STARTERKIT) \
 
 NFSROOTCLEANFILES = $(INSTALLERCHROOT) \
                     $(BASEIMAGE64CHROOT) \
-                    $(CLIENTPKG64CHROOT)
+                    $(BASEIMAGE32CHROOT) \
+                    $(CLIENTPKG64CHROOT) \
+                    $(CLIENTPKG32CHROOT)
 
 LOCALCLEANFILES=$(TMP)/$(STARTERKIT) \
                 $(STARTERKITDIR) \
@@ -150,8 +150,10 @@ CPUCOUNT = `cat /proc/cpuinfo | grep vendor_id|wc -l`
 all:
 	@echo "Try "
 	@echo "  make installernfsroot -- a base OS subdir bootable from NFS for Tapper::Installer"
-	@echo "  make baseimage64      -- a Debian imagefile used as base system for tests"
-	@echo "  make clientpkg64      -- the Tapper client package for tests"
+	@echo "  make baseimage64      -- a Debian imagefile used as base system for tests (64bit)"
+	@echo "  make baseimage32      -- a Debian imagefile used as base system for tests (32bit)"
+	@echo "  make clientpkg64      -- the Tapper client package for tests (64bit)"
+	@echo "  make clientpkg32      -- the Tapper client package for tests (32bit)"
 	@echo "  make localsetup       -- most stuff to run a central Tapper host"
 	@echo "                           but WITHOUT automation. Contains:"
 	@echo "                              . reports receiver"
@@ -174,9 +176,15 @@ clean:
 	-umount $(BASEIMAGE64CHROOT)/sys
 	-umount $(BASEIMAGE64CHROOT)/proc
 	-umount $(BASEIMAGE64CHROOT)/dev/pts
+	-umount $(BASEIMAGE32CHROOT)/sys
+	-umount $(BASEIMAGE32CHROOT)/proc
+	-umount $(BASEIMAGE32CHROOT)/dev/pts
 	-umount $(CLIENTPKG64CHROOT)/sys
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
+	-umount $(CLIENTPKG32CHROOT)/sys
+	-umount $(CLIENTPKG32CHROOT)/proc
+	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	-rm -fr $(CLEANFILES)
 
 cleannfsroot:
@@ -186,9 +194,15 @@ cleannfsroot:
 	-umount $(BASEIMAGE64CHROOT)/sys
 	-umount $(BASEIMAGE64CHROOT)/proc
 	-umount $(BASEIMAGE64CHROOT)/dev/pts
+	-umount $(BASEIMAGE32CHROOT)/sys
+	-umount $(BASEIMAGE32CHROOT)/proc
+	-umount $(BASEIMAGE32CHROOT)/dev/pts
 	-umount $(CLIENTPKG64CHROOT)/sys
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
+	-umount $(CLIENTPKG32CHROOT)/sys
+	-umount $(CLIENTPKG32CHROOT)/proc
+	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	-rm -fr $(NFSROOTCLEANFILES)
 
 cleanlocal:
@@ -216,8 +230,17 @@ cleanbaseimage64chroot:
 	-umount $(BASEIMAGE64CHROOT)/dev/pts
 	-rm -fr $(BASEIMAGE64CHROOT)
 
+cleanbaseimage32chroot:
+	-umount $(BASEIMAGE32CHROOT)/sys
+	-umount $(BASEIMAGE32CHROOT)/proc
+	-umount $(BASEIMAGE32CHROOT)/dev/pts
+	-rm -fr $(BASEIMAGE32CHROOT)
+
 cleanbaseimage64file:
 	-rm -f $(BASEIMAGE64FILE)
+
+cleanbaseimage32file:
+	-rm -f $(BASEIMAGE32FILE)
 
 cleanstarterkit:
 	-rm -f $(STARTERKITDIR)/etc/log4perl.cfg
@@ -230,7 +253,9 @@ cleandb:
 
 mrproper: clean localclean localcleandb nfsrootclean
 	-rm -fr $(CLIENTPKG64FILE)
+	-rm -fr $(CLIENTPKG32FILE)
 	-rm -fr $(BASEIMAGE64FILE)
+	-rm -fr $(BASEIMAGE32FILE)
 
 # ==============================================================
 # *
@@ -380,12 +405,14 @@ $(INSTALLERNFSROOT)/etc/log4perl.cfg:
 
 baseimage64chroot: dependencies $(BASEIMAGE64CHROOT)/etc/log4perl.cfg
 
+baseimage32chroot: dependencies $(BASEIMAGE32CHROOT)/etc/log4perl.cfg
+
 $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	@echo "########################################################"
 	@echo "# "
-	@echo "#         ,****************."
-	@echo "# Set up  *   BASE IMAGE   *  to be used for Tests"
-	@echo "#         '****************'"
+	@echo "#         ,**********************."
+	@echo "# Set up  *   BASE IMAGE 64bit   *  to be used for Tests"
+	@echo "#         '**********************'"
 	@echo "# "
 	@echo "########################################################"
 #
@@ -407,7 +434,7 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 ### set shell environment
 #
 	@echo "########## set shell environment"
-	echo 'PS1="CHROOT-Tapper-BaseImage:\w# "'      >> $(BASEIMAGE64CHROOT)/root/.bashrc
+	echo 'PS1="CHROOT-Tapper-BaseImage64:\w# "'      >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`' >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'export TEST_JOBS=$$CPUCOUNT'             >> $(BASEIMAGE64CHROOT)/root/.bashrc
 	echo 'export PERL_AUTOINSTALL="--defaultdeps"' >> $(BASEIMAGE64CHROOT)/root/.bashrc
@@ -458,7 +485,92 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	rm $(BASEIMAGE64CHROOT)/tmp/$(STARTERKIT)
 
 
+$(BASEIMAGE32CHROOT)/etc/log4perl.cfg:
+	@echo "########################################################"
+	@echo "# "
+	@echo "#         ,**********************."
+	@echo "# Set up  *   BASE IMAGE 32bit   *  to be used for Tests"
+	@echo "#         '**********************'"
+	@echo "# "
+	@echo "########################################################"
+#
+### prepare subdirs
+#
+	@echo "########## prepare subdirs"
+	-umount $(BASEIMAGE32CHROOT)/proc
+	-umount $(BASEIMAGE32CHROOT)/dev/pts
+	-rm -fr $(BASEIMAGE32CHROOT)
+	mkdir -p $(BASEIMAGE32CHROOT)
+#
+### bootstrap new debian in it
+#
+	@echo "########## bootstrap new debian in it"
+	debootstrap --arch i386 squeeze $(BASEIMAGE32CHROOT) $(DEBIANMIRROR)
+	mount -t proc proc $(BASEIMAGE32CHROOT)/proc
+	mount -t devpts devpts $(BASEIMAGE32CHROOT)/dev/pts
+#
+### set shell environment
+#
+	@echo "########## set shell environment"
+	echo 'PS1="CHROOT-Tapper-BaseImage32:\w# "'      >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`' >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'export TEST_JOBS=$$CPUCOUNT'             >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'export PERL_AUTOINSTALL="--defaultdeps"' >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'export PERLBREW_ROOT=/opt/tapper/perl'   >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'export PATH=/opt/tapper/python/bin:$${PATH}' >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'export TWMC_TEST_PORT=9876'              >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'alias dir="ls -Flart --color"'           >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'rm="rm -i"'                              >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'cp="cp -i"'                              >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	echo 'mv="mv -i"'                              >> $(BASEIMAGE32CHROOT)/root/.bashrc
+	mkdir -p $(BASEIMAGE32CHROOT)/root/.ssh
+	cat /root/.ssh/id_dsa.pub >> $(BASEIMAGE32CHROOT)/root/.ssh/authorized_keys
+	cat /root/.ssh/id_rsa.pub >> $(BASEIMAGE32CHROOT)/root/.ssh/authorized_keys
+	chmod 600 $(BASEIMAGE32CHROOT)/root/.ssh/authorized_keys
+	chmod 700 $(BASEIMAGE32CHROOT)/root/.ssh
+#
+### Perl/CPAN setup
+#
+	@echo "########## Perl/CPAN setup"
+	mkdir -p $(BASEIMAGE32CHROOT)/$(DISTROPREFSDIR)/
+	rsync -r $(DISTROPREFSDIR)/ $(BASEIMAGE32CHROOT)/$(DISTROPREFSDIR)/
+	-perl -pni -e 's/disabled: +1/disabled: 0/' $(BASEIMAGE32CHROOT)/$(DISTROPREFSDIR)/PARDUS.File-MimeInfo.yml
+#
+### enable console login
+#
+	@echo "########## enable console login"
+	echo 's0:12345:respawn:/sbin/getty 115200 ttyS0 vt100' >> $(BASEIMAGE32CHROOT)/etc/inittab
+#
+### prepare writeable directories
+#
+	@echo "########## prepare writeable directories"
+	echo 'proc  /proc      proc  defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+	echo 'sysfs /sys       sysfs defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+	echo 'tmpfs /tmp       tmpfs defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+	echo 'ramfs /var/log   ramfs defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+	echo 'ramfs /var/lock  ramfs defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+	echo 'ramfs /var/run   ramfs defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+	echo 'ramfs /var/spool ramfs defaults 0 0' >> $(BASEIMAGE32CHROOT)/etc/fstab
+#
+### configure NFS working directory
+#
+	@echo "########## configure NFS working directory"
+	echo "$(TAPPER_SERVER):$(DATATAPPER) $(DATATAPPER) nfs auto,defaults 0 0" >> $(BASEIMAGE32CHROOT)/etc/fstab
+#
+### run remaining configuration from inside the chroot
+#
+	@echo "########## run remaining configuration from inside the chroot"
+	cp $(STARTERKITDIR)/utils/$(BASEIMAGE32CHROOTPREPARE) $(BASEIMAGE32CHROOT)/
+	cp $(TMP)/$(STARTERKIT) $(BASEIMAGE32CHROOT)/tmp/
+	chmod +x $(BASEIMAGE32CHROOT)/$(BASEIMAGE32CHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(BASEIMAGE32CHROOT) /$(BASEIMAGE32CHROOTPREPARE)
+	rm -f $(BASEIMAGE32CHROOT)/$(BASEIMAGE32CHROOTPREPARE)
+	rm $(BASEIMAGE32CHROOT)/tmp/$(STARTERKIT)
+
+
 clientpkg64: $(CLIENTPKG64FILE)
+
+clientpkg32: $(CLIENTPKG32FILE)
 
 $(CLIENTPKG64FILE): baseimage64file
 #
@@ -466,9 +578,9 @@ $(CLIENTPKG64FILE): baseimage64file
 #
 	@echo "##############################################################"
 	@echo "# "
-	@echo "#         ,********************."
-	@echo "# Set up  *   CLIENT PACKAGE   *  to be installed in Test-OS"
-	@echo "#         '********************'"
+	@echo "#         ,**************************."
+	@echo "# Set up  *   CLIENT PACKAGE 64bit   *  to be installed in Test-OS"
+	@echo "#         '**************************'"
 	@echo "# "
 	@echo "##############################################################"
 #
@@ -492,7 +604,45 @@ $(CLIENTPKG64FILE): baseimage64file
 	rm -f $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
-	cd $(CLIENTPKG64CHROOT) ; tar -czf $(CLIENTPKG64FILE) opt/
+	cd $(CLIENTPKG64CHROOT) ; \
+	  cp $(CLIENTPKG64FILE) $(CLIENTPKG64FILE)_bak_`date +%Y%m%d%H%M` ; \
+	  tar -czf $(CLIENTPKG64FILE) opt/
+
+$(CLIENTPKG32FILE): baseimage32file
+#
+# Prepare client-side opt-tapper package
+#
+	@echo "##############################################################"
+	@echo "# "
+	@echo "#         ,**************************."
+	@echo "# Set up  *   CLIENT PACKAGE 32bit   *  to be installed in Test-OS"
+	@echo "#         '**************************'"
+	@echo "# "
+	@echo "##############################################################"
+#
+### prepare subdirs
+#
+	@echo "########## Prepare client-side opt-tapper package"
+	-umount $(CLIENTPKG32CHROOT)/proc
+	-umount $(CLIENTPKG32CHROOT)/dev/pts
+	-rm -fr $(CLIENTPKG32CHROOT)
+	mkdir -p $(CLIENTPKG32CHROOT)
+	tar -C $(CLIENTPKG32CHROOT) -xzf $(BASEIMAGE32FILE)
+	mount -t proc proc $(CLIENTPKG32CHROOT)/proc
+	mount -t devpts devpts $(CLIENTPKG32CHROOT)/dev/pts
+
+	cp $(STARTERKITDIR)/utils/$(CLIENTPKG32CHROOTPREPARE) $(CLIENTPKG32CHROOT)/
+	cp $(STARTERKITDIR)/utils/$(PYTHONPREPARE) $(CLIENTPKG32CHROOT)/
+	mkdir -p $(CLIENTPKG32CHROOT)/pythonrepo
+	rsync -r $(PYTHONREPODIR)/ $(CLIENTPKG32CHROOT)/pythonrepo/
+	chmod +x $(CLIENTPKG32CHROOT)/$(CLIENTPKG32CHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(CLIENTPKG32CHROOT) /$(CLIENTPKG32CHROOTPREPARE)
+	rm -f $(CLIENTPKG32CHROOT)/$(CLIENTPKG32CHROOTPREPARE)
+	-umount $(CLIENTPKG32CHROOT)/proc
+	-umount $(CLIENTPKG32CHROOT)/dev/pts
+	cd $(CLIENTPKG32CHROOT) ; \
+	  cp $(CLIENTPKG32FILE) $(CLIENTPKG32FILE)_bak_`date +%Y%m%d%H%M` ; \
+	  tar -czf $(CLIENTPKG32FILE) opt/
 
 # ==============================================================
 # *
@@ -532,6 +682,8 @@ workingdirs: $(WORKDIRS)
 
 baseimage64file: baseimage64chroot workingdirs $(BASEIMAGE64FILE)
 
+baseimage32file: baseimage32chroot workingdirs $(BASEIMAGE32FILE)
+
 $(BASEIMAGE64FILE): $(BASEIMAGE64CHROOT)/etc/log4perl.cfg
 #
 # Pack baseimage64
@@ -540,7 +692,21 @@ $(BASEIMAGE64FILE): $(BASEIMAGE64CHROOT)/etc/log4perl.cfg
 	-umount $(BASEIMAGE64CHROOT)/sys
 	-umount $(BASEIMAGE64CHROOT)/proc
 	-umount $(BASEIMAGE64CHROOT)/dev/pts
-	cd $(BASEIMAGE64CHROOT) ; tar -czf $(BASEIMAGE64FILE) .
+	cd $(BASEIMAGE64CHROOT) ; \
+	  cp $(BASEIMAGE64FILE) $(BASEIMAGE64FILE)_bak_`date +%Y%m%d%H%M` ; \
+	  tar -czf $(BASEIMAGE64FILE) .
+
+$(BASEIMAGE32FILE): $(BASEIMAGE32CHROOT)/etc/log4perl.cfg
+#
+# Pack baseimage32
+#
+	@echo "########## Pack baseimage32"
+	-umount $(BASEIMAGE32CHROOT)/sys
+	-umount $(BASEIMAGE32CHROOT)/proc
+	-umount $(BASEIMAGE32CHROOT)/dev/pts
+	cd $(BASEIMAGE32CHROOT) ; \
+	  cp $(BASEIMAGE32FILE) $(BASEIMAGE32FILE)_bak_`date +%Y%m%d%H%M` ; \
+	  tar -czf $(BASEIMAGE32FILE) .
 
 nfsrootdir: $(NFSROOTDIR)/etc/log4perl.cfg
 
@@ -803,7 +969,7 @@ localsetup: workingdirs dependencies \
 	@echo "**************************************************"
 
 tapperhost: intro dependencies \
-            installernfsroot baseimage64file nfsrootdir clientpkg64 \
+            installernfsroot baseimage64file baseimage32file nfsrootdir clientpkg64 clientpkg32 \
             localsetup
 	@echo "**************************************************"
 	@echo "*"
