@@ -49,13 +49,17 @@ export PERL_AUTOINSTALL="--defaultdeps"
 export TEST_JOBS=${CPUCOUNT}
 export CPAN=/opt/tapper/perl/perls/current/bin/cpan
 
-TAPPERMODULES="Tapper::PRC Tapper::Installer Tapper::TestSuite::AutoTest Tapper::TestSuite::HWTrack"
+TAPPERMODULES="Tapper::PRC
+               Tapper::Installer
+               Tapper::TestSuite::AutoTest
+               Tapper::TestSuite::HWTrack"
 # build from CPAN (which solves dependencies)
 # and optionally from git on top
 for module in $TAPPERMODULES ; do
-    $CPAN $module
+    $CPAN $module || $CPAN -f $module
 done
 if [ "x1" == "x$TAPPERFROMGIT" ] ; then
+    $CPAN Module::Install
     for module in $TAPPERMODULES ; do
         dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/
