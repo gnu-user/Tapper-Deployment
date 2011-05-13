@@ -154,13 +154,18 @@ all:
 	@echo "  make installernfsroot -- a base OS subdir bootable from NFS for Tapper::Installer"
 	@echo "  make baseimage64      -- a Debian imagefile used as base system for tests (64bit)"
 	@echo "  make baseimage32      -- a Debian imagefile used as base system for tests (32bit)"
-	@echo "  make clientpkg64      -- the Tapper client package for tests (64bit)"
-	@echo "  make clientpkg32      -- the Tapper client package for tests (32bit)"
+	@echo "  make clientpkgs       -- the Tapper client packages for tests (64bit + 32bit)"
 	@echo "  make localsetup       -- most stuff to run a central Tapper host"
 	@echo "                           but WITHOUT automation. Contains:"
 	@echo "                              . reports receiver"
 	@echo "                              . reports api"
 	@echo "                              . web frontend"
+	@echo "  make allautomation    -- everything for automation"
+	@echo "                           but not the MCP-messageReceiver"
+	@echo "                              . nfsroot"
+	@echo "                              . baseimage 64+32"
+	@echo "                              . clientpkg 64+32"
+	@echo "                              . mcp"
 	@echo "  make tapperhost       -- everything to run a central Tapper control host"
 	@echo "                           INCLUSIVE automation. Contains:"
 	@echo "                              . make installernfsroot"
@@ -579,6 +584,19 @@ clientpkg64: $(CLIENTPKG64FILE)
 
 clientpkg32: $(CLIENTPKG32FILE)
 
+clientpkgs: clientpkg64 clientpkg32
+
+allautomation: cleanstarterkit \
+               cleannfsroot \
+               cleanbaseimage64file cleanbaseimage64chroot \
+               cleanbaseimage32file cleanbaseimage32chroot \
+               starterkit \
+               installernfsroot \
+               baseimage64file \
+               baseimage32file \
+               clientpkgs \
+               mcp
+
 $(CLIENTPKG64FILE): baseimage64file
 #
 # Prepare client-side opt-tapper package
@@ -793,18 +811,10 @@ perlpkgs:
 	-#PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) TWMC_TEST_PORT=9876 $(CPAN) -f Test::WWW::Mechanize::Catalyst
 	-# work around missing deps in HTML::FormFu
 	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) -f IO::Interactive
-	-# work around bug in Tapper::Config 3.0.4
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) TAPPER_CONFIG_FILE=lib/auto/Tapper/Config/tapper.yml $(CPAN) Tapper::Config
-	-# missing dependency in T::R::Web 3.0.5
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::Testplan
-	-# missing dependency in T::R::Web
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) TAP::Parser
 	-# non problematic rest
 	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) DBI
 	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) DBD::mysql
 	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) DBD::SQLite
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::Schema
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::CLI
 
 databases:
 #
