@@ -127,6 +127,8 @@ STARTERKIT=$(STARTERKITBASENAME).tgz
 STARTERKITURL=http://amd64.org/pub/tapper/$(STARTERKIT)
 STARTERKITDIR=$(TMP)/$(STARTERKITBASENAME)
 
+PREPAREPERLMODULE=$(STARTERKITDIR)/utils/prepare-perlmodule
+
 ### intermediate build files, not the final results
 CLEANFILES = $(TMP)/$(STARTERKIT) \
              $(STARTERKITDIR) \
@@ -874,18 +876,21 @@ receiver: workingdirs dependencies tapperconfig libdeps optperl
 # start scripts for reports-receiver
 #
 	@echo "########## start scripts for reports-receiver"
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::Reports::Receiver
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::Receiver
 	cp $(STARTERKITDIR)/etc/init.d/tapper_reports_receiver_daemon /etc/init.d/
 	insserv tapper_reports_receiver_daemon
 	/etc/init.d/tapper_reports_receiver_daemon restart
 	sleep 2
+
+cli: workingdirs dependencies tapperconfig libdeps optperl
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::CLI
 
 api: workingdirs dependencies tapperconfig libdeps optperl
 #
 # start scripts for reports-api
 #
 	@echo "########## start scripts for reports-api"
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::Reports::API
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::API
 	cp $(STARTERKITDIR)/etc/init.d/tapper_reports_api_daemon /etc/init.d/
 	insserv tapper_reports_api_daemon
 	/etc/init.d/tapper_reports_api_daemon restart
@@ -895,7 +900,7 @@ mcp: workingdirs dependencies tapperconfig libdeps optperl examplemachines initi
 # start scripts for MCP
 #
 	@echo "########## start scripts for MCP"
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::MCP
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::MCP
 	cp $(STARTERKITDIR)/etc/init.d/tapper_mcp_daemon /etc/init.d/
 	insserv tapper_mcp_daemon
 	/etc/init.d/tapper_mcp_daemon restart
@@ -905,7 +910,9 @@ mcpmsgreceiver: workingdirs dependencies tapperconfig libdeps optperl
 # start scripts for MCP Message Receiver
 #
 	@echo "########## start scripts for MCP Message Receiver"
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) Tapper::MCP::MessageReceiver
+	-# force latest schema
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Schema
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::MCP::MessageReceiver
 	cp $(STARTERKITDIR)/etc/init.d/tapper_mcp_msg_receiver_daemon /etc/init.d/
 	insserv tapper_mcp_msg_receiver_daemon
 	/etc/init.d/tapper_mcp_msg_receiver_daemon restart
@@ -915,7 +922,7 @@ web: workingdirs dependencies tapperconfig libdeps optperl initialdata
 # start scripts for web frontend
 #
 	@echo "########## start scripts for web frontend"
-	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) TWMC_TEST_PORT=9876 $(CPAN) Tapper::Reports::Web
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::Web
 	cp $(STARTERKITDIR)/usecases/kernel_build.mpc $(USECASEDIR)/
 	cp $(STARTERKITDIR)/usecases/tests.yml   $(USECASEDIR)/
 	cp $(STARTERKITDIR)/etc/apache2/conf.d/tapper_reports_web.conf /etc/apache2/conf.d/

@@ -21,6 +21,7 @@ EXAMPLEFILES = $(STARTERKIT)/etc/log4perl.cfg \
                $(STARTERKIT)/utils/prepare-clientpkg64-in-chroot \
                $(STARTERKIT)/utils/prepare-clientpkg32-in-chroot \
                $(STARTERKIT)/utils/prepare-optperl \
+               $(STARTERKIT)/utils/prepare-perlmodule \
                $(STARTERKIT)/utils/prepare-optpython \
                $(STARTERKIT)/usecases/kernel_build.mpc \
                $(STARTERKIT)/usecases/tests.yml \
