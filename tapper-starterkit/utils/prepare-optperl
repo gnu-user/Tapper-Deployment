@@ -20,6 +20,7 @@ echo "if [ -e /opt/tapper/perl/etc/bashrc ] ; then . /opt/tapper/perl/etc/bashrc
 . /opt/tapper/perl/etc/bashrc
 perlbrew install -j ${CPUCOUNT} perl-${PERLVERSION}
 perlbrew switch perl-${PERLVERSION}
+cd /opt/tapper/perl/perls ; ln -sf perl-${PERLVERSION} current
 
 # CPAN config
 cp /tmp/tapper-starterkit/misc/CPAN-Config.pm /opt/tapper/perl/perls/perl-${PERLVERSION}/lib/${PERLVERSION}/CPAN/Config.pm
