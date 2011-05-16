@@ -10,6 +10,7 @@ export TWMC_TEST_PORT=9876
 export PERL_AUTOINSTALL="--defaultdeps"
 export TEST_JOBS=${CPUCOUNT}
 export CPAN=/opt/tapper/perl/perls/current/bin/cpan
+. /opt/tapper/perl/etc/bashrc
 
 TAPPERMODULES="$*"
 
