@@ -138,7 +138,7 @@ CLEANFILES = $(TMP)/$(STARTERKIT) \
              $(STARTERKITDIR) \
              $(DISTROPREFSDIR)
 
-NFSROOTCLEANFILES = $(INSTALLERCHROOT) \
+CHROOTCLEANFILES = $(INSTALLERCHROOT) \
                     $(BASEIMAGE64CHROOT) \
                     $(BASEIMAGE32CHROOT) \
                     $(CLIENTPKG64CHROOT) \
@@ -198,7 +198,7 @@ clean:
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	-rm -fr $(CLEANFILES)
 
-cleannfsroot:
+cleanchroots:
 	-umount $(INSTALLERCHROOT)/sys
 	-umount $(INSTALLERCHROOT)/proc
 	-umount $(INSTALLERCHROOT)/dev/pts
@@ -214,7 +214,7 @@ cleannfsroot:
 	-umount $(CLIENTPKG32CHROOT)/sys
 	-umount $(CLIENTPKG32CHROOT)/proc
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
-	-rm -fr $(NFSROOTCLEANFILES)
+	-rm -fr $(CHROOTCLEANFILES)
 
 cleanlocal:
 	@echo "########## Remove local machine setup"
@@ -318,9 +318,9 @@ endif
 # *
 # ==============================================================
 
-installernfsroot: dependencies $(INSTALLERNFSROOT)/etc/log4perl.cfg
+installerchroot: dependencies $(INSTALLERCHROOT)/etc/log4perl.cfg
 
-$(INSTALLERNFSROOT)/etc/log4perl.cfg:
+$(INSTALLERCHROOT)/etc/log4perl.cfg:
 	@echo "##################################################################"
 	@echo "# "
 	@echo "# "
@@ -610,11 +610,12 @@ clientpkg32: $(CLIENTPKG32FILE)
 clientpkgs: clientpkg64 clientpkg32
 
 allautomation: cleanstarterkit \
-               cleannfsroot \
+               cleanchroots \
                cleanbaseimage64file cleanbaseimage64chroot \
                cleanbaseimage32file cleanbaseimage32chroot \
                starterkit \
-               installernfsroot \
+               installerchroot \
+               nfsrootdir \
                baseimage64file \
                baseimage32file \
                clientpkgs \
@@ -1014,7 +1015,7 @@ localsetup: workingdirs dependencies \
 	@echo "**************************************************"
 
 tapperhost: intro dependencies \
-            installernfsroot baseimage64file baseimage32file nfsrootdir clientpkg64 clientpkg32 \
+            installerchroot baseimages nfsrootdir clientpkgs \
             localsetup
 	@echo "**************************************************"
 	@echo "*"
