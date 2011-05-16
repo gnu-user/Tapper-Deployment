@@ -154,25 +154,30 @@ CPUCOUNT = `cat /proc/cpuinfo | grep vendor_id|wc -l`
 
 # default target
 all:
-	@echo "Try "
-	@echo "  make installernfsroot -- a base OS subdir bootable from NFS for Tapper::Installer"
-	@echo "  make baseimage64      -- a Debian imagefile used as base system for tests (64bit)"
-	@echo "  make baseimage32      -- a Debian imagefile used as base system for tests (32bit)"
+	@echo "Try most common targets:"
+	@echo ""
 	@echo "  make clientpkgs       -- the Tapper client packages for tests (64bit + 32bit)"
+	@echo "  make baseimages       -- the Tapper base images for tests (64bit + 32bit)"
+	@echo "  make allautomation    -- everything for automation"
+	@echo "                           *except* the MCP-MessageReceiver"
+	@echo "                              . some cleanups"
+	@echo "                              . nfsrootdir"
+	@echo "                              . baseimages"
+	@echo "                              . clientpkgs"
+	@echo "                              . mcp"
+	@echo ""
+	@echo "Other targets:"
+	@echo "  make installerchroot -- a base OS subdir bootable from NFS for Tapper::Installer"
+	@echo "  make baseimage64file  -- a Debian imagefile used as base system for tests (64bit)"
+	@echo "  make baseimage32file  -- a Debian imagefile used as base system for tests (32bit)"
 	@echo "  make localsetup       -- most stuff to run a central Tapper host"
 	@echo "                           but WITHOUT automation. Contains:"
 	@echo "                              . reports receiver"
 	@echo "                              . reports api"
 	@echo "                              . web frontend"
-	@echo "  make allautomation    -- everything for automation"
-	@echo "                           but not the MCP-messageReceiver"
-	@echo "                              . nfsroot"
-	@echo "                              . baseimage 64+32"
-	@echo "                              . clientpkg 64+32"
-	@echo "                              . mcp"
 	@echo "  make tapperhost       -- everything to run a central Tapper control host"
 	@echo "                           INCLUSIVE automation. Contains:"
-	@echo "                              . make installernfsroot"
+	@echo "                              . make installerchroot"
 	@echo "                              . make baseimage64"
 	@echo "                              . make clientpkg64"
 	@echo "                              . make localsetup"
@@ -732,6 +737,8 @@ workingdirs: $(WORKDIRS)
 baseimage64file: baseimage64chroot workingdirs $(BASEIMAGE64FILE)
 
 baseimage32file: baseimage32chroot workingdirs $(BASEIMAGE32FILE)
+
+baseimages: baseimage64file baseimage32file
 
 $(BASEIMAGE64FILE): $(BASEIMAGE64CHROOT)/etc/log4perl.cfg
 #
