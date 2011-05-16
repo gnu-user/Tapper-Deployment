@@ -76,6 +76,7 @@ NFSROOTDIR      = $(DATATAPPER)/live/nfsroot
 # 64bit always
 INSTALLERCHROOT=/mnt/chroot/squeeze-tapper-nfsroot-for-installer
 INSTALLERCHROOTPREPARE=prepare-installer-nfsroot-in-chroot
+INSTALLERCHROOTPREPAREPERLMODULES=prepare-installer-nfsroot-perlmodules
 
 # baseimage
 # 64bit
@@ -111,6 +112,9 @@ DISTROPREFSDIR=/root/.cpan/prefs
 PERLBIN=/opt/tapper/perl/perls/current/bin
 CPAN=$(PERLBIN)/cpan
 PERL=$(PERLBIN)/perl
+
+### Python setup
+PERLPREPARE=prepare-optperl
 
 ### Python setup
 PYTHONDIR=/opt/tapper/python
@@ -399,6 +403,25 @@ $(INSTALLERNFSROOT)/etc/log4perl.cfg:
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /$(INSTALLERCHROOTPREPARE)
 	rm -f $(INSTALLERCHROOT)/$(INSTALLERCHROOTPREPARE)
 	rm $(INSTALLERCHROOT)/tmp/$(STARTERKIT)
+
+installerchrootperl: installerchroot
+	@echo "########## prepare subdirs"
+	-umount $(INSTALLERCHROOT)/sys
+	-umount $(INSTALLERCHROOT)/proc
+	-umount $(INSTALLERCHROOT)/dev/pts
+	mount -t proc proc $(INSTALLERCHROOT)/proc
+	mount -t devpts devpts $(INSTALLERCHROOT)/dev/pts
+	@echo "########## run remaining configuration from inside the chroot"
+	cp $(STARTERKITDIR)/utils/$(INSTALLERCHROOTPREPARE) $(INSTALLERCHROOT)/
+	cp $(STARTERKITDIR)/utils/$(INSTALLERCHROOTPREPARE) $(INSTALLERCHROOT)/
+	cp $(TMP)/$(STARTERKIT) $(INSTALLERCHROOT)/tmp/
+	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(STARTERKIT)
+	chmod +x $(INSTALLERCHROOT)/$(INSTALLERCHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPAREPERLMODULES)
+	rm -f $(INSTALLERCHROOT)/$(INSTALLERCHROOTPREPARE)
+	rm $(INSTALLERCHROOT)/tmp/$(STARTERKIT)
+
+
 
 # ==============================================================
 # *
@@ -749,8 +772,8 @@ $(PERLBIN)/perl:
 # Install Perl
 #
 	@echo "########## Install Perl"
-#	chmod +x $(STARTERKITDIR)/utils/prepare-optperl
-	$(STARTERKITDIR)/utils/prepare-optperl
+#	chmod +x $(STARTERKITDIR)/utils/$(PERLPREPARE)
+	$(STARTERKITDIR)/utils/$(PERLPREPARE)
 
 optpython: dependencies $(PYTHONBIN)/python
 
