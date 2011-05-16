@@ -765,9 +765,7 @@ $(BASEIMAGE32FILE): $(BASEIMAGE32CHROOT)/etc/log4perl.cfg
 	  cp $(BASEIMAGE32FILE) $(BASEIMAGE32FILE)_bak_`date +%Y%m%d%H%M` ; \
 	  tar -czf $(BASEIMAGE32FILE) .
 
-nfsrootdir: $(NFSROOTDIR)/etc/log4perl.cfg
-
-$(NFSROOTDIR)/etc/log4perl.cfg: installernfsroot workingdirs
+nfsrootdir: installerchroot workingdirs
 #
 # Prepare network boot OS
 #
