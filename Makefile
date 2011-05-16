@@ -16,10 +16,8 @@ EXAMPLEFILES = $(STARTERKIT)/etc/log4perl.cfg \
                $(STARTERKIT)/misc/starterkit.query.mas \
                $(STARTERKIT)/misc/disable_useless_consoles.patch \
                $(STARTERKIT)/utils/prepare-installer-nfsroot-in-chroot \
-               $(STARTERKIT)/utils/prepare-baseimage64-in-chroot \
-               $(STARTERKIT)/utils/prepare-baseimage32-in-chroot \
-               $(STARTERKIT)/utils/prepare-clientpkg64-in-chroot \
-               $(STARTERKIT)/utils/prepare-clientpkg32-in-chroot \
+               $(STARTERKIT)/utils/prepare-baseimage-in-chroot \
+               $(STARTERKIT)/utils/prepare-clientpkg-in-chroot \
                $(STARTERKIT)/utils/prepare-optperl \
                $(STARTERKIT)/utils/prepare-perlmodule \
                $(STARTERKIT)/utils/prepare-optpython \

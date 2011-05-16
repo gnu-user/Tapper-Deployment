@@ -81,21 +81,21 @@ INSTALLERCHROOTPREPARE=prepare-installer-nfsroot-in-chroot
 # 64bit
 BASEIMAGE64FILE=$(IMAGESDIR)/debian_base64.tgz
 BASEIMAGE64CHROOT=/mnt/chroot/squeeze-tapper-baseimage64
-BASEIMAGE64CHROOTPREPARE=prepare-baseimage64-in-chroot
+BASEIMAGE64CHROOTPREPARE=prepare-baseimage-in-chroot
 # 32bit
 BASEIMAGE32FILE=$(IMAGESDIR)/debian_base32.tgz
 BASEIMAGE32CHROOT=/mnt/chroot/squeeze-tapper-baseimage32
-BASEIMAGE32CHROOTPREPARE=prepare-baseimage32-in-chroot
+BASEIMAGE32CHROOTPREPARE=prepare-baseimage-in-chroot
 
 # client package
 # 64bit
 CLIENTPKG64FILE=$(TAPPERUTILSDIR)/opt-tapper64.tar.gz
 CLIENTPKG64CHROOT=/mnt/chroot/squeeze-tapper-clientpkg64
-CLIENTPKG64CHROOTPREPARE=prepare-clientpkg64-in-chroot
+CLIENTPKG64CHROOTPREPARE=prepare-clientpkg-in-chroot
 # 32bit
 CLIENTPKG32FILE=$(TAPPERUTILSDIR)/opt-tapper32.tar.gz
 CLIENTPKG32CHROOT=/mnt/chroot/squeeze-tapper-clientpkg32
-CLIENTPKG32CHROOTPREPARE=prepare-clientpkg32-in-chroot
+CLIENTPKG32CHROOTPREPARE=prepare-clientpkg-in-chroot
 
 ### initial machine names
 TAPPER_SERVER=tapper
