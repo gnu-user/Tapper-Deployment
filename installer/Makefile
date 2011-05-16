@@ -419,6 +419,8 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	rm -f $(INSTALLERCHROOT)/$(INSTALLERCHROOTPREPARE)
 	rm $(INSTALLERCHROOT)/tmp/$(STARTERKIT)
 
+nfsrootperl: installerchrootperl nfsrootdir
+
 installerchrootperl: installerchroot
 	@echo "########## prepare subdirs"
 	-umount $(INSTALLERCHROOT)/sys

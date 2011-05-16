@@ -28,7 +28,6 @@ apt-get --yes --allow-unauthenticated install pciutils
 echo "root:tapper" | chpasswd
 
 /tmp/tapper-starterkit/utils/prepare-optperl
-
 /tmp/tapper-starterkit/utils/prepare-installer-nfsroot-perlmodules
 
 cp /tmp/tapper-starterkit/etc/init.d/tapper /etc/init.d/tapper
