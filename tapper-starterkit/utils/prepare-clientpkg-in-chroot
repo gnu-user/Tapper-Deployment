@@ -2,13 +2,15 @@
 
 set -x
 
-export TAPPERFROMGIT=1 # default in OSRC, we only call that script to get bleeding edge
-PYTHONPREFIX=/opt/tapper/python
+export TAPPERFROMGIT
+
+# prepare example files
+cd /tmp
+tar xzf tapper-starterkit.tgz
 
 # ===========================================================
 
 # currently we rely Perl already built in baseimage
-
 if false ; then
     # for parallel builds
     export CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`
@@ -75,10 +77,11 @@ fi
 
 # ==================== Python ====================
 
-/prepare-optpython
+/tmp/tapper-starterkit/utils/prepare-optpython
 
 # ==================== Python test suites ====================
 
+PYTHONPREFIX=/opt/tapper/python
 for pkg in `find /pythonrepo/ -type f` ; do
     ${PYTHONPREFIX}/bin/easy_install $pkg
 done
