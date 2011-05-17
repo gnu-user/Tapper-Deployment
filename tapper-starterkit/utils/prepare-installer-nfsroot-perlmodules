@@ -6,3 +6,4 @@ export TAPPERFROMGIT
 
 /tmp/tapper-starterkit/utils/prepare-common-development-packages
 /tmp/tapper-starterkit/utils/prepare-perlmodule Tapper::Installer
+/tmp/tapper-starterkit/utils/create-symlinks

@@ -33,3 +33,5 @@ PYTHONPREFIX=/opt/tapper/python
 for pkg in `find /pythonrepo/ -type f` ; do
     ${PYTHONPREFIX}/bin/easy_install $pkg
 done
+
+/tmp/tapper-starterkit/utils/create-symlinks

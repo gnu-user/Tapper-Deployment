@@ -22,6 +22,7 @@ EXAMPLEFILES = $(STARTERKIT)/etc/log4perl.cfg \
                $(STARTERKIT)/utils/prepare-optperl \
                $(STARTERKIT)/utils/prepare-perlmodule \
                $(STARTERKIT)/utils/prepare-optpython \
+               $(STARTERKIT)/utils/create-symlinks \
                $(STARTERKIT)/usecases/kernel_build.mpc \
                $(STARTERKIT)/usecases/tests.yml \
                $(STARTERKIT)/tftpboot/bzImage

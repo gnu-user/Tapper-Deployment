@@ -34,3 +34,5 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         make install
     done
 fi
+
+/tmp/tapper-starterkit/utils/create-symlinks
