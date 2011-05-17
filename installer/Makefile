@@ -786,7 +786,7 @@ nfsrootdir: installerchroot workingdirs
 # Prepare network boot OS
 #
 	@echo "########## Prepare network boot OS"
-	rsync -ax --delete $(INSTALLERCHROOT)/ $(NFSROOTDIR)/
+	rsync -axc --delete $(INSTALLERCHROOT)/ $(NFSROOTDIR)/
 
 optperl: dependencies $(PERLBIN)/perl
 
