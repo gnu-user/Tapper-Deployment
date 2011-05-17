@@ -63,8 +63,13 @@ cd /dev
 # currently we build Perl just to have it already available for
 # clientpkg and save compile time
 
+# Perl
 if true ; then
     /tmp/tapper-starterkit/utils/prepare-optperl
 fi
 
+# Python
+if true ; then
+    /tmp/tapper-starterkit/utils/prepare-optpython
+fi
 # ===========================================================
