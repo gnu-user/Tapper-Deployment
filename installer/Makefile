@@ -359,9 +359,6 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	-umount $(INSTALLERCHROOT)/dev/pts
 	-rm -fr $(INSTALLERCHROOT)
 	mkdir -p $(INSTALLERCHROOT)
-	mkdir -p /mnt/nfs
-	mkdir -p /mnt/images
-	mkdir -p /mnt/output
 #
 ### bootstrap new debian in chroot
 #

@@ -38,6 +38,9 @@ insserv tapper
 
 mkdir -p /mnt/target/
 mkdir -p /mnt/guests
+mkdir -p /mnt/nfs
+mkdir -p /mnt/images
+mkdir -p /mnt/output
 mkdir -p /data/tapper
 
 # Since /etc/ is not writable on a readonly NFS we need to
