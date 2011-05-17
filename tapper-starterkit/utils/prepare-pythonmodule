@@ -23,7 +23,7 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/OSRC-Tapper/src/$module
         rm -f dist/*.egg
-        python setup.py bdist_egg
+        ${PYTHONPREFIX}/bin/python setup.py bdist_egg
         ${PYTHONPREFIX}/bin/easy_install dist/*.egg
     done
 fi
