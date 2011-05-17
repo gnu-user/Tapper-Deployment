@@ -136,11 +136,10 @@ CLEANFILES = $(TMP)/$(STARTERKIT) \
              $(STARTERKITDIR) \
              $(DISTROPREFSDIR)
 
-CHROOTCLEANFILES = $(INSTALLERCHROOT) \
-                    $(BASEIMAGE64CHROOT) \
-                    $(BASEIMAGE32CHROOT) \
-                    $(CLIENTPKG64CHROOT) \
-                    $(CLIENTPKG32CHROOT)
+CLEANFILESCHROOTNFSROOT    = $(INSTALLERCHROOT)
+CLEANFILESCHROOTBASEIMAGES = $(BASEIMAGE64CHROOT) $(BASEIMAGE32CHROOT)
+CLEANFILESCHROOTCLIENTPKGS = $(CLIENTPKG64CHROOT) $(CLIENTPKG32CHROOT)
+
 
 LOCALCLEANFILES=$(TMP)/$(STARTERKIT) \
                 $(STARTERKITDIR) \
@@ -210,23 +209,32 @@ clean:
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	-rm -fr $(CLEANFILES)
 
-cleanchroots:
+cleanchrootnfs:
 	-umount $(INSTALLERCHROOT)/sys
 	-umount $(INSTALLERCHROOT)/proc
 	-umount $(INSTALLERCHROOT)/dev/pts
+	-rm -fr $(CLEANFILESCHROOTNFSROOT)
+
+ cleanchrootbaseimages:
 	-umount $(BASEIMAGE64CHROOT)/sys
 	-umount $(BASEIMAGE64CHROOT)/proc
 	-umount $(BASEIMAGE64CHROOT)/dev/pts
 	-umount $(BASEIMAGE32CHROOT)/sys
 	-umount $(BASEIMAGE32CHROOT)/proc
 	-umount $(BASEIMAGE32CHROOT)/dev/pts
+	-rm -fr $(CLEANFILESCHROOTBASEIMAGES)
+
+ cleanchrootclientpkgs:
 	-umount $(CLIENTPKG64CHROOT)/sys
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
 	-umount $(CLIENTPKG32CHROOT)/sys
 	-umount $(CLIENTPKG32CHROOT)/proc
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
-	-rm -fr $(CHROOTCLEANFILES)
+	-rm -fr $(CLEANFILESCHROOTCLIENTPKGS)
+
+cleanchroots: cleanchrootnfs cleanchrootbaseimages cleanchrootclientpkgs
+
 
 cleanlocal:
 	@echo "########## Remove local machine setup"
