@@ -37,33 +37,33 @@ PYTHONPREFIX=/opt/tapper/python
 
 # Python libs
 /tmp/tapper-starterkit/utils/prepare-pythonmodule \
- TestSuite-PyTAP
- TestSuite-Metainfo
- TestSuite-dom0-meta
- TestSuite-Check-CPU-features
- TestSuite-L3CID
- TestSuite-AIM-Python
- TestSuite-AutoTestWrapper-Python
- TestSuite-CPUFreq-Python
- TestSuite-CStates-Python
- TestSuite-CTCS-Python
- TestSuite-DIY-Python
- TestSuite-HackBench-Python
- TestSuite-HostCPUTest-Python
- TestSuite-HTS-Python
- TestSuite-KernBench-Python
- TestSuite-KVM-Passthrough-Python
- TestSuite-LLCBench-Python
- TestSuite-LmBench-Python
- TestSuite-LTP-Python
- TestSuite-ParseLogs-Python
- TestSuite-Phoronix-Python
- TestSuite-RHV7-Python
- TestSuite-SLBench-Python
- TestSuite-StressAppTest-Python
- TestSuite-SysBench-Python
- TestSuite-TIOBench-Python
- TestSuite-Topology-Python
+ TestSuite-PyTAP \
+ TestSuite-Metainfo \
+ TestSuite-dom0-meta \
+ TestSuite-Check-CPU-features \
+ TestSuite-L3CID \
+ TestSuite-AIM-Python \
+ TestSuite-AutoTestWrapper-Python \
+ TestSuite-CPUFreq-Python \
+ TestSuite-CStates-Python \
+ TestSuite-CTCS-Python \
+ TestSuite-DIY-Python \
+ TestSuite-HackBench-Python \
+ TestSuite-HostCPUTest-Python \
+ TestSuite-HTS-Python \
+ TestSuite-KernBench-Python \
+ TestSuite-KVM-Passthrough-Python \
+ TestSuite-LLCBench-Python \
+ TestSuite-LmBench-Python \
+ TestSuite-LTP-Python \
+ TestSuite-ParseLogs-Python \
+ TestSuite-Phoronix-Python \
+ TestSuite-RHV7-Python \
+ TestSuite-SLBench-Python \
+ TestSuite-StressAppTest-Python \
+ TestSuite-SysBench-Python \
+ TestSuite-TIOBench-Python \
+ TestSuite-Topology-Python \
  TestSuite-TSMaster-Python
 
 # ===========================================================
