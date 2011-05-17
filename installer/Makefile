@@ -946,7 +946,7 @@ api: workingdirs dependencies tapperconfig libdeps optperl
 	insserv tapper_reports_api_daemon
 	/etc/init.d/tapper_reports_api_daemon restart
 
-mcp: workingdirs dependencies tapperconfig libdeps optperl examplemachines initialdata
+mcp: workingdirs dependencies tapperconfig libdeps optperl
 #
 # start scripts for MCP
 #
@@ -968,7 +968,7 @@ mcpmsgreceiver: workingdirs dependencies tapperconfig libdeps optperl
 	insserv tapper_mcp_msg_receiver_daemon
 	/etc/init.d/tapper_mcp_msg_receiver_daemon restart
 
-web: workingdirs dependencies tapperconfig libdeps optperl initialdata
+web: workingdirs dependencies tapperconfig libdeps optperl
 #
 # start scripts for web frontend
 #
@@ -1012,7 +1012,7 @@ testquery: receiver
 localsetup: workingdirs dependencies \
             tapperconfig \
             libdeps optperl perlpkgs optpython \
-            databases examplemachines \
+            databases \
             receiver web api \
             testreport \
             nfsserver tftpserver \
