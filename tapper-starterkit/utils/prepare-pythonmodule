@@ -1,0 +1,31 @@
+#! /bin/bash
+
+set -x
+
+# Python libs are only built from git
+export TAPPERFROMGIT=1
+
+export CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`
+
+TAPPERMODULES="$*"
+PYTHONPREFIX=/opt/tapper/python
+
+# git checkout
+cd /tmp/
+if [ ! -d OSRC-Tapper ] ; then
+    git clone gituser@wotan:/srv/gitroot/OSRC-Tapper
+fi
+cd OSRC-Tapper
+git pull
+
+if [ "x1" == "x$TAPPERFROMGIT" ] ; then
+    for module in $TAPPERMODULES ; do
+        dist=$(echo $module | sed -e 's/::/-/g')
+        cd /tmp/OSRC-Tapper/src/$module
+        rm -f dist/*.egg
+        python setup.py bdist_egg
+        ${PYTHONPREFIX}/bin/easy_install dist/*.egg
+    done
+fi
+
+/tmp/tapper-starterkit/utils/create-symlinks
