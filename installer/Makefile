@@ -147,7 +147,6 @@ CHROOTCLEANFILES = $(INSTALLERCHROOT) \
 LOCALCLEANFILES=$(TMP)/$(STARTERKIT) \
                 $(STARTERKITDIR) \
                 $(DISTROPREFSDIR) \
-                /etc/tapper.cfg \
                 /opt/tapper/perl
 
 CPUCOUNT = `cat /proc/cpuinfo | grep vendor_id|wc -l`
@@ -914,14 +913,17 @@ initialdata:
 	-echo "insert into topic (name, description)  values ('Benchmark', 'Collection of values');" | mysql testrundb -utapper -ptapper
 	-echo "insert into topic (name, description)  values ('Distribution', 'OS or Compiler distribution');" | mysql testrundb -utapper -ptapper
 
-tapperconfig:
+tapperconfig: /etc/tapper.cfg
+
+/etc/tapper.cfg:
 #
 # Install Tapper config
-	@echo "########## Install Tapper config"
-	cp $(STARTERKITDIR)/etc/tapper.cfg /etc/
-	-# dynamically write local IP in tapper.cfg
-	export IP=$$(ip addr | awk '/inet / {print $$2}'|grep -v 127.0.0|cut -d/ -f1) ; \
-	  perl -i -pne 'my $$ip=$$ENV{IP}; s/__TAPPER_HOST_IP__/$$ip/g' /etc/tapper.cfg
+	@echo "########## Install Tapper config if not exists"
+	if [ ! -e /etc/tapper.cfg ] ; then \
+	  cp $(STARTERKITDIR)/etc/tapper.cfg /etc/ ; \
+          export IP=$$(ip addr | awk '/inet / {print $$2}'|grep -v 127.0.0|cut -d/ -f1) ; \
+            perl -i -pne 'my $$ip=$$ENV{IP}; s/__TAPPER_HOST_IP__/$$ip/g' /etc/tapper.cfg ; \
+        fi
 
 receiver: workingdirs dependencies tapperconfig libdeps optperl
 #
