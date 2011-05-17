@@ -55,8 +55,6 @@ OUTPUTDIR       = $(DATATAPPER)/live/output
 IMAGESDIR       = $(DATATAPPER)/live/repository/images
 # packages
 PACKAGESDIR     = $(DATATAPPER)/live/repository/packages
-# packages
-PYTHONREPODIR   = $(DATATAPPER)/live/repository/pythonrepo
 # Tapper clientlib
 TAPPERUTILSDIR  = $(DATATAPPER)/live/repository/packages/tapperutils
 # test programs
@@ -665,8 +663,6 @@ $(CLIENTPKG64FILE): baseimage64file
 
 	cp $(STARTERKITDIR)/utils/$(CLIENTPKG64CHROOTPREPARE) $(CLIENTPKG64CHROOT)/
 	cp $(TMP)/$(STARTERKIT) $(CLIENTPKG64CHROOT)/tmp/
-	mkdir -p $(CLIENTPKG64CHROOT)/pythonrepo
-	rsync -r $(PYTHONREPODIR)/ $(CLIENTPKG64CHROOT)/pythonrepo/
 	chmod +x $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG64CHROOT) /$(CLIENTPKG64CHROOTPREPARE)
 	rm -f $(CLIENTPKG64CHROOT)/$(CLIENTPKG64CHROOTPREPARE)
@@ -699,8 +695,6 @@ $(CLIENTPKG32FILE): baseimage32file
 	mount -t proc proc $(CLIENTPKG32CHROOT)/proc
 	mount -t devpts devpts $(CLIENTPKG32CHROOT)/dev/pts
 	-# prepare python repo
-	mkdir -p $(CLIENTPKG32CHROOT)/pythonrepo
-	rsync -r $(PYTHONREPODIR)/ $(CLIENTPKG32CHROOT)/pythonrepo/
 	-# opt-tapper clientpkg
 	cp $(STARTERKITDIR)/utils/$(CLIENTPKG32CHROOTPREPARE) $(CLIENTPKG32CHROOT)/
 	cp $(TMP)/$(STARTERKIT) $(CLIENTPKG64CHROOT)/tmp/
@@ -809,7 +803,7 @@ temare: optpython
 #
 # Install temare
 #
-	$(PYTHONBIN)/easy_install $(PYTHONREPODIR)/temare-1.000004-py2.6.egg
+	$(STARTERKITDIR)/utils/prepare-pythonmodule temare
 
 nfsserver:
 #
