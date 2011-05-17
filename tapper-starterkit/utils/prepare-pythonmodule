@@ -13,7 +13,7 @@ PYTHONPREFIX=/opt/tapper/python
 # git checkout
 cd /tmp/
 if [ ! -d OSRC-Tapper ] ; then
-    git clone gituser@wotan:/srv/gitroot/OSRC-Tapper
+    git clone git://wotan/OSRC-Tapper
 fi
 cd OSRC-Tapper
 git pull
