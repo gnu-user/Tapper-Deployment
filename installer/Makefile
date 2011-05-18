@@ -310,17 +310,6 @@ $(DISTROPREFSDIR)/00.README:
 dependencies: distroprefs starterkit
 
 starterkit:
-	@echo "########## install some build dependencies"
-	$(APTGET) update
-	$(APTGET) install debootstrap
-	$(APTGET) install patch
-	$(APTGET) install makepatch
-	$(APTGET) install curl
-	$(APTGET) install wget
-	$(APTGET) install rsync
-	$(APTGET) install gcc
-	$(APTGET) install perl-modules
-	$(APTGET) install libsqlite3-dev
 ifeq ($(LOCALSTARTERKIT),1)
 	cd .. ; tar -czf $(STARTERKIT) $(STARTERKITBASENAME)/ ; cp $(STARTERKIT) $(TMP)/$(STARTERKIT)
 else
@@ -837,7 +826,17 @@ libdeps:
 #
 # Prepare packages
 #
-	@echo "########## Prepare packages"
+	@echo "########## install some build dependencies"
+	$(APTGET) update
+	$(APTGET) install debootstrap
+	$(APTGET) install patch
+	$(APTGET) install makepatch
+	$(APTGET) install curl
+	$(APTGET) install wget
+	$(APTGET) install rsync
+	$(APTGET) install gcc
+	$(APTGET) install perl-modules
+	$(APTGET) install libsqlite3-dev
 	$(APTGET) install expect
 	$(APTGET) install expect-dev
 	$(APTGET) install libssl-dev
