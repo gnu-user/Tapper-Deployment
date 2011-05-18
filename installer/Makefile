@@ -156,8 +156,9 @@ help:
 	@echo "  make web              -- update WebGUI"
 	@echo "  make mcp              -- update MCP"
 	@echo "  make nfsrootperl      -- update Tapper::Installer & friends in nfsroot"
-	@echo "  make clientpkgs       -- update client packages for tests (64bit + 32bit)"
-	@echo "  make baseimages       -- create base images for tests (64bit + 32bit)"
+	@echo "  make clientpkgs       -- create client packages (64bit + 32bit)"
+	@echo "  make clientpkgs++     -- update client packages (64bit + 32bit)"
+	@echo "  make baseimages       -- create base images     (64bit + 32bit)"
 	@echo ""
 	@echo "  make allautomation    -- everything for automation"
 	@echo "                           *except* the MCP-MessageReceiver"
@@ -607,11 +608,8 @@ $(BASEIMAGE32CHROOT)/etc/log4perl.cfg:
 	cd $(BASEIMAGE32CHROOT)/tmp/ ; tar xzf $(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(BASEIMAGE32CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE32CHROOTPREPARE)
 
-clientpkg64: $(CLIENTPKG64FILE)
-
-clientpkg32: $(CLIENTPKG32FILE)
-
 clientpkgs: clientpkg64 clientpkg32
+clientpkgs++: clientpkg64++ clientpkg32++
 
 allautomation: cleanstarterkit \
                cleanchroots \
@@ -625,17 +623,21 @@ allautomation: cleanstarterkit \
                clientpkgs \
                mcp
 
-$(CLIENTPKG64FILE): baseimage64file
-#
-# Prepare client-side opt-tapper package
-#
-	@echo "##############################################################"
-	@echo "# "
-	@echo "#         ,**************************."
-	@echo "# Set up  *   CLIENT PACKAGE 64bit   *  to be installed in Test-OS"
-	@echo "#         '**************************'"
-	@echo "# "
-	@echo "##############################################################"
+
+# ==============================================================
+# *
+# *
+# *
+# *                      64 bit client pkg
+# *
+# *
+# *
+# ==============================================================
+
+clientpkg64:   prepareclientchroot64                updateclientpkg64
+clientpkg64++: prepareclientchroot64 addclientpkg64 updateclientpkg64
+
+prepareclientchroot64: baseimage64file
 #
 ### prepare subdirs
 #
@@ -647,8 +649,22 @@ $(CLIENTPKG64FILE): baseimage64file
 	tar -C $(CLIENTPKG64CHROOT) -xzf $(BASEIMAGE64FILE)
 	mount -t proc proc $(CLIENTPKG64CHROOT)/proc
 	mount -t devpts devpts $(CLIENTPKG64CHROOT)/dev/pts
-	cp $(TMP)/$(STARTERKIT) $(CLIENTPKG64CHROOT)/tmp/
-	cd $(CLIENTPKG64CHROOT)/tmp/ ; tar xzf $(STARTERKIT)
+	cd $(CLIENTPKG64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
+
+addclientpkg64:
+	tar -C $(CLIENTPKG64CHROOT) -xzf $(CLIENTPKG64FILE)
+
+updateclientpkg64:
+#
+# Prepare client-side opt-tapper package
+#
+	@echo "##############################################################"
+	@echo "# "
+	@echo "#         ,**************************."
+	@echo "# SET UP  *   CLIENT PACKAGE 64bit   *"
+	@echo "#         '**************************'"
+	@echo "# "
+	@echo "##############################################################"
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG64CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG64CHROOTPREPARE)
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
@@ -656,17 +672,22 @@ $(CLIENTPKG64FILE): baseimage64file
 	  cp $(CLIENTPKG64FILE) $(CLIENTPKG64FILE)_bak_`date +%Y%m%d%H%M` ; \
 	  tar -czf $(CLIENTPKG64FILE) opt/
 
-$(CLIENTPKG32FILE): baseimage32file
-#
-# Prepare client-side opt-tapper package
-#
-	@echo "##############################################################"
-	@echo "# "
-	@echo "#         ,**************************."
-	@echo "# Set up  *   CLIENT PACKAGE 32bit   *  to be installed in Test-OS"
-	@echo "#         '**************************'"
-	@echo "# "
-	@echo "##############################################################"
+
+# ==============================================================
+# *
+# *
+# *
+# *                      32 bit client pkg
+# *
+# *
+# *
+# ==============================================================
+
+
+clientpkg32:   prepareclientchroot32                updateclientpkg32
+clientpkg32++: prepareclientchroot32 addclientpkg32 updateclientpkg32
+
+prepareclientchroot32: baseimage32file
 #
 ### prepare subdirs
 #
@@ -678,16 +699,29 @@ $(CLIENTPKG32FILE): baseimage32file
 	tar -C $(CLIENTPKG32CHROOT) -xzf $(BASEIMAGE32FILE)
 	mount -t proc proc $(CLIENTPKG32CHROOT)/proc
 	mount -t devpts devpts $(CLIENTPKG32CHROOT)/dev/pts
-	-# prepare python repo
-	-# opt-tapper clientpkg
-	cp $(TMP)/$(STARTERKIT) $(CLIENTPKG64CHROOT)/tmp/
-	cd $(CLIENTPKG64CHROOT)/tmp/ ; tar xzf $(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
+	cd $(CLIENTPKG32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
+
+addclientpkg32:
+	tar -C $(CLIENTPKG32CHROOT) -xzf $(CLIENTPKG32FILE)
+
+updateclientpkg32:
+#
+# Prepare client-side opt-tapper package
+#
+	@echo "##############################################################"
+	@echo "# "
+	@echo "#         ,**************************."
+	@echo "# SET UP  *   CLIENT PACKAGE 32bit   *"
+	@echo "#         '**************************'"
+	@echo "# "
+	@echo "##############################################################"
+	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
 	-umount $(CLIENTPKG32CHROOT)/proc
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	cd $(CLIENTPKG32CHROOT) ; \
 	  cp $(CLIENTPKG32FILE) $(CLIENTPKG32FILE)_bak_`date +%Y%m%d%H%M` ; \
 	  tar -czf $(CLIENTPKG32FILE) opt/
+
 
 # ==============================================================
 # *
@@ -698,6 +732,7 @@ $(CLIENTPKG32FILE): baseimage32file
 # *
 # *
 # ==============================================================
+
 
 intro:
 	@echo "########################################################"
