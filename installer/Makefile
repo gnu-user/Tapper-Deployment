@@ -992,8 +992,6 @@ web: workingdirs dependencies tapperconfig libdeps optperl
 	cp $(STARTERKITDIR)/usecases/tests.yml   $(USECASEDIR)/
 	cp $(STARTERKITDIR)/etc/apache2/conf.d/tapper_reports_web.conf /etc/apache2/conf.d/
 	/etc/init.d/apache2 restart
-	@echo "We wait some seconds for the daemons to come up..."
-	sleep 5
 
 tftpserver:
 #
