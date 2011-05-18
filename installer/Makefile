@@ -704,7 +704,7 @@ updateclientpkg32:
 	@echo "#         '**************************'"
 	@echo "# "
 	@echo "##############################################################"
-	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
+	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
 	-umount $(CLIENTPKG32CHROOT)/proc
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	cd $(CLIENTPKG32CHROOT) ; \
