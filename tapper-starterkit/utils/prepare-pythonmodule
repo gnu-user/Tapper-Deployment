@@ -1,7 +1,5 @@
 #! /bin/bash
 
-set -x
-
 # Python libs are only built from git
 export TAPPERFROMGIT=1
 
@@ -20,6 +18,9 @@ git pull
 
 if [ "x1" == "x$TAPPERFROMGIT" ] ; then
     for module in $TAPPERMODULES ; do
+        echo "" ; echo "" ; echo ""
+        echo "********************** $module **********************************"
+        echo "" ; echo "" ; echo ""
         dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/OSRC-Tapper/src/$module
         rm -f dist/*.egg

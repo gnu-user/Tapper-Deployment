@@ -1,7 +1,5 @@
 #! /bin/bash
 
-set -x
-
 export TAPPERFROMGIT
 export CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`
 export PERLVERSION=5.12.3
@@ -17,12 +15,18 @@ TAPPERMODULES="$*"
 # build from CPAN (which solves dependencies)
 # and optionally from git on top
 for module in $TAPPERMODULES ; do
+        echo "" ; echo "" ; echo ""
+        echo "********************** $module **********************************"
+        echo "" ; echo "" ; echo ""
     $CPAN $module || $CPAN -f $module
 done
 if [ "x1" == "x$TAPPERFROMGIT" ] ; then
     $CPAN Module::Install::AuthorRequires
     $CPAN Module::Install
     for module in $TAPPERMODULES ; do
+        echo "" ; echo "" ; echo ""
+        echo "********************** $module (from git) **********************************"
+        echo "" ; echo "" ; echo ""
         dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/
         rm -fr $dist
