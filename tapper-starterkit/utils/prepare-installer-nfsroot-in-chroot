@@ -16,10 +16,6 @@ apt-get --yes --allow-unauthenticated install locales
 echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
 /usr/sbin/locale-gen
 
-# prepare example files
-cd /tmp
-tar xzf tapper-starterkit.tgz
-
 # some utils
 /tmp/tapper-starterkit/utils/prepare-common-development-packages
 apt-get --yes --allow-unauthenticated install pciutils

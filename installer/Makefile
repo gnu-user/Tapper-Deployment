@@ -407,8 +407,7 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 ### run remaining configuration from inside the chroot
 #
 	@echo "########## run remaining configuration from inside the chroot"
-	cp $(TMP)/$(STARTERKIT) $(INSTALLERCHROOT)/tmp/
-	cd $(CLIENTPKG64CHROOT)/tmp/ ; tar xzf $(STARTERKIT)
+	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPARE)
 
 nfsrootperl: installerchrootperl nfsrootdir
@@ -421,8 +420,7 @@ installerchrootperl: installerchroot
 	mount -t proc proc $(INSTALLERCHROOT)/proc
 	mount -t devpts devpts $(INSTALLERCHROOT)/dev/pts
 	@echo "########## run remaining configuration from inside the chroot"
-	cp $(TMP)/$(STARTERKIT) $(INSTALLERCHROOT)/tmp/
-	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(STARTERKIT)
+	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPAREPERLMODULES)
 
 # ==============================================================
@@ -514,8 +512,7 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 ### run remaining configuration from inside the chroot
 #
 	@echo "########## run remaining configuration from inside the chroot"
-	cp $(TMP)/$(STARTERKIT) $(BASEIMAGE64CHROOT)/tmp/
-	cd $(BASEIMAGE64CHROOT)/tmp/ ; tar xzf $(STARTERKIT)
+	cd $(BASEIMAGE64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(BASEIMAGE64CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE64CHROOTPREPARE)
 
 $(BASEIMAGE32CHROOT)/etc/log4perl.cfg:
@@ -593,8 +590,7 @@ $(BASEIMAGE32CHROOT)/etc/log4perl.cfg:
 ### run remaining configuration from inside the chroot
 #
 	@echo "########## run remaining configuration from inside the chroot"
-	cp $(TMP)/$(STARTERKIT) $(BASEIMAGE32CHROOT)/tmp/
-	cd $(BASEIMAGE32CHROOT)/tmp/ ; tar xzf $(STARTERKIT)
+	cd $(BASEIMAGE32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(BASEIMAGE32CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE32CHROOTPREPARE)
 
 clientpkgs: clientpkg64 clientpkg32
@@ -654,6 +650,7 @@ updateclientpkg64:
 	@echo "#         '**************************'"
 	@echo "# "
 	@echo "##############################################################"
+	cd $(CLIENTPKG64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG64CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG64CHROOTPREPARE)
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
@@ -704,6 +701,7 @@ updateclientpkg32:
 	@echo "#         '**************************'"
 	@echo "# "
 	@echo "##############################################################"
+	cd $(CLIENTPKG32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
 	-umount $(CLIENTPKG32CHROOT)/proc
 	-umount $(CLIENTPKG32CHROOT)/dev/pts

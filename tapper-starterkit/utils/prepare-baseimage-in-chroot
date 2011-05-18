@@ -13,9 +13,8 @@ apt-get --yes --allow-unauthenticated install locales
 echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
 /usr/sbin/locale-gen
 
-# prepare example files
-cd /tmp
-tar xzf tapper-starterkit.tgz
+# add dependencies
+apt-get --yes --allow-unauthenticated install libyaml-dev
 
 # helpless try for the archives
 # wget ftp://ftp.debian.org/debian/pool/main/n/nfs-utils/nfs-common_1.2.2-5_amd64.deb

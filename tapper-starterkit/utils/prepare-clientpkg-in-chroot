@@ -1,14 +1,25 @@
 #! /bin/bash
 
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo "********** WORKAROUND in prepare-clientpkg-in-chroot -- DELETE THE apt-get line ************"
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+echo ""
+apt-get --yes --allow-unauthenticated install libyaml-dev
+
+# ===========================================================
+
 set -x
 
 export TAPPERFROMGIT
-
-# prepare example files
-if [ -e /tmp/tapper-starterkit.tgz ] ; then
-    cd /tmp
-    tar xzf tapper-starterkit.tgz
-fi
 
 # ===========================================================
 
