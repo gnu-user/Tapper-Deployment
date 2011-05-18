@@ -60,16 +60,10 @@ cd /dev
 
 # ===========================================================
 
-# currently we build Perl just to have it already available for
-# clientpkg and save compile time
+# we build Perl+Python to have it already available for clientpkg and
+# save compile time
 
-# Perl
-if true ; then
-    /tmp/tapper-starterkit/utils/prepare-optperl
-fi
+/tmp/tapper-starterkit/utils/prepare-optperl
+/tmp/tapper-starterkit/utils/prepare-optpython
 
-# Python
-if true ; then
-    /tmp/tapper-starterkit/utils/prepare-optpython
-fi
 # ===========================================================

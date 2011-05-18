@@ -5,14 +5,9 @@ set -x
 export TAPPERFROMGIT
 
 # prepare example files
-cd /tmp
-tar xzf tapper-starterkit.tgz
-
-# ===========================================================
-
-# currently we rely Perl already built in baseimage
-if false ; then
-    /tmp/tapper-starterkit/utils/prepare-optperl
+if [ -e /tmp/tapper-starterkit.tgz ] ; then
+    cd /tmp
+    tar xzf tapper-starterkit.tgz
 fi
 
 # ===========================================================
@@ -23,13 +18,6 @@ fi
  Tapper::Installer \
  Tapper::TestSuite::AutoTest \
  Tapper::TestSuite::HWTrack
-
-# ==================== Python ====================
-
-# currently we rely Python already built in baseimage
-if false ; then
-    /tmp/tapper-starterkit/utils/prepare-optpython
-fi
 
 # ==================== Python test suites ====================
 
