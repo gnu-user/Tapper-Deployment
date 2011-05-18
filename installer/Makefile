@@ -988,6 +988,7 @@ web: workingdirs dependencies tapperconfig libdeps optperl
 # start scripts for web frontend
 #
 	@echo "########## start scripts for web frontend"
+	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Testplan
 	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::Web
 	cp $(STARTERKITDIR)/usecases/kernel_build.mpc $(USECASEDIR)/
 	cp $(STARTERKITDIR)/usecases/tests.yml   $(USECASEDIR)/
