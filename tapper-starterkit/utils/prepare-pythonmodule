@@ -19,7 +19,7 @@ git pull
 if [ "x1" == "x$TAPPERFROMGIT" ] ; then
     for module in $TAPPERMODULES ; do
         echo "" ; echo "" ; echo ""
-        echo "********************** $module **********************************"
+        echo "********************** $module (from git) **********************************"
         echo "" ; echo "" ; echo ""
         dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/OSRC-Tapper/src/$module

@@ -13,12 +13,6 @@ done
 
 # Python
 
-for f in $(find /opt/tapper/python/bin/ -name "tapper*") ; do
-    ln -sf $f $BIN/
-done
-for f in $(find /opt/tapper/python/bin/ -name "py_*") ; do
-    ln -sf $f $BIN/
-done
-for f in temare ; do
-    ln -sf /opt/tapper/python/bin/$f $BIN/
-done
+for f in $(find /opt/tapper/python/bin/ -name "tapper*") ; do ln -sf $f $BIN/ ; done
+for f in $(find /opt/tapper/python/bin/ -name "py_*") ; do ln -sf $f $BIN/ ; done
+for f in temare metainfo ; do ln -sf /opt/tapper/python/bin/$f $BIN/ ; done
