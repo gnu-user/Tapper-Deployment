@@ -62,8 +62,9 @@ PYTHONPREFIX=/opt/tapper/python
  TestSuite-StressAppTest-Python \
  TestSuite-SysBench-Python \
  TestSuite-TIOBench-Python \
- TestSuite-Topology-Python \
- TestSuite-TSMaster-Python
+ TestSuite-Topology-Python
+
+# TestSuite-TSMaster-Python
 
 # ===========================================================
 
