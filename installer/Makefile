@@ -407,6 +407,14 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	@echo "########## configure NFS working directory"
 	echo "$(TAPPER_SERVER):$(DATATAPPER) $(DATATAPPER) nfs auto,defaults 0 0" >> $(INSTALLERCHROOT)/etc/fstab
 #
+### ssh authorized_keys for reboot via ssh
+#
+	mkdir -p $(INSTALLERCHROOT)/root/.ssh
+	cat /root/.ssh/id_dsa.pub >> $(INSTALLERCHROOT)/root/.ssh/authorized_keys
+	cat /root/.ssh/id_rsa.pub >> $(INSTALLERCHROOT)/root/.ssh/authorized_keys
+	chmod 600 $(INSTALLERCHROOT)/root/.ssh/authorized_keys
+	chmod 700 $(INSTALLERCHROOT)/root/.ssh
+#
 ### run remaining configuration from inside the chroot
 #
 	@echo "########## run remaining configuration from inside the chroot"
