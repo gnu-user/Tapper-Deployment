@@ -24,9 +24,13 @@ Try most common targets:
 
   make web              -- update WebGUI
   make mcp              -- update MCP
+  make cli              -- update CLI
+  make api              -- update Reports::API
+  make receiver         -- update Reports::Receiver
   make nfsrootperl      -- update Tapper::Installer & friends in nfsroot
-  make clientpkgs       -- update client packages for tests (64bit + 32bit)
-  make baseimages       -- create base images for tests (64bit + 32bit)
+  make clientpkgs       -- create client packages (64bit + 32bit)
+  make clientpkgs++     -- update client packages (64bit + 32bit)
+  make baseimages       -- create base images     (64bit + 32bit)
 
   make allautomation    -- everything for automation
                            *except* the MCP-MessageReceiver
