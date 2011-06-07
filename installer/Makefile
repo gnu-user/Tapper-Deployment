@@ -38,8 +38,13 @@ DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
 # install Tapper libs from Git repositories
 TAPPERFROMGIT ?= 0
 
-# use local starterkit instead of amd64.org
+GITPREFIXTAPPERLIBS ?= git://github.com/amd
+GITPREFIXTESTSUITES ?= git://wotan
+
+# use local starterkit instead of download from amd64.org
 LOCALSTARTERKIT ?= 1
+
+SCRIPTENVIRONMENT = TAPPERFROMGIT=$(TAPPERFROMGIT) GITPREFIXTAPPERLIBS=$(GITPREFIXTAPPERLIBS) GITPREFIXTESTSUITES=$(GITPREFIXTESTSUITES)
 
 # ===== General configuration =====
 
@@ -418,7 +423,7 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 #
 	@echo "########## run remaining configuration from inside the chroot"
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPARE)
+	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPARE)
 
 nfsrootperl: installerchrootperl nfsrootdir
 
@@ -431,7 +436,7 @@ installerchrootperl: installerchroot
 	mount -t devpts devpts $(INSTALLERCHROOT)/dev/pts
 	@echo "########## run remaining configuration from inside the chroot"
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPAREPERLMODULES)
+	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPAREPERLMODULES)
 
 # ==============================================================
 # *
@@ -523,7 +528,7 @@ $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 #
 	@echo "########## run remaining configuration from inside the chroot"
 	cd $(BASEIMAGE64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(BASEIMAGE64CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE64CHROOTPREPARE)
+	$(SCRIPTENVIRONMENT) chroot $(BASEIMAGE64CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE64CHROOTPREPARE)
 
 $(BASEIMAGE32CHROOT)/etc/log4perl.cfg:
 	@echo "########################################################"
@@ -601,7 +606,7 @@ $(BASEIMAGE32CHROOT)/etc/log4perl.cfg:
 #
 	@echo "########## run remaining configuration from inside the chroot"
 	cd $(BASEIMAGE32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(BASEIMAGE32CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE32CHROOTPREPARE)
+	$(SCRIPTENVIRONMENT) linux32 chroot $(BASEIMAGE32CHROOT) /tmp/tapper-starterkit/utils/$(BASEIMAGE32CHROOTPREPARE)
 
 clientpkgs: clientpkg64 clientpkg32
 clientpkgs++: clientpkg64++ clientpkg32++
@@ -661,7 +666,7 @@ updateclientpkg64:
 	@echo "# "
 	@echo "##############################################################"
 	cd $(CLIENTPKG64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) chroot $(CLIENTPKG64CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG64CHROOTPREPARE)
+	$(SCRIPTENVIRONMENT) chroot $(CLIENTPKG64CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG64CHROOTPREPARE)
 	-umount $(CLIENTPKG64CHROOT)/proc
 	-umount $(CLIENTPKG64CHROOT)/dev/pts
 	cd $(CLIENTPKG64CHROOT) ; \
@@ -712,7 +717,7 @@ updateclientpkg32:
 	@echo "# "
 	@echo "##############################################################"
 	cd $(CLIENTPKG32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
-	TAPPERFROMGIT=$(TAPPERFROMGIT) linux32 chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
+	$(SCRIPTENVIRONMENT) linux32 chroot $(CLIENTPKG32CHROOT) /tmp/tapper-starterkit/utils/$(CLIENTPKG32CHROOTPREPARE)
 	-umount $(CLIENTPKG32CHROOT)/proc
 	-umount $(CLIENTPKG32CHROOT)/dev/pts
 	cd $(CLIENTPKG32CHROOT) ; \
@@ -952,21 +957,21 @@ receiver: workingdirs dependencies tapperconfig libdeps optperl
 # start scripts for reports-receiver
 #
 	@echo "########## start scripts for reports-receiver"
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::Receiver
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Reports::Receiver
 	cp $(STARTERKITDIR)/etc/init.d/tapper_reports_receiver_daemon /etc/init.d/
 	insserv tapper_reports_receiver_daemon
 	/etc/init.d/tapper_reports_receiver_daemon restart
 	sleep 2
 
 cli: workingdirs dependencies tapperconfig libdeps optperl
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::CLI
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::CLI
 
 api: workingdirs dependencies tapperconfig libdeps optperl
 #
 # start scripts for reports-api
 #
 	@echo "########## start scripts for reports-api"
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::API
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Reports::API
 	cp $(STARTERKITDIR)/etc/init.d/tapper_reports_api_daemon /etc/init.d/
 	insserv tapper_reports_api_daemon
 	/etc/init.d/tapper_reports_api_daemon restart
@@ -976,7 +981,7 @@ mcp: workingdirs dependencies tapperconfig libdeps optperl
 # start scripts for MCP
 #
 	@echo "########## start scripts for MCP"
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::MCP
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::MCP
 	cp $(STARTERKITDIR)/etc/init.d/tapper_mcp_daemon /etc/init.d/
 	insserv tapper_mcp_daemon
 	/etc/init.d/tapper_mcp_daemon restart
@@ -987,8 +992,8 @@ mcpmsgreceiver: workingdirs dependencies tapperconfig libdeps optperl
 #
 	@echo "########## start scripts for MCP Message Receiver"
 	-# force latest schema
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Schema
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::MCP::MessageReceiver
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Schema
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::MCP::MessageReceiver
 	cp $(STARTERKITDIR)/etc/init.d/tapper_mcp_msg_receiver_daemon /etc/init.d/
 	insserv tapper_mcp_msg_receiver_daemon
 	/etc/init.d/tapper_mcp_msg_receiver_daemon restart
@@ -998,9 +1003,9 @@ web: workingdirs dependencies tapperconfig libdeps optperl
 # start scripts for web frontend
 #
 	@echo "########## start scripts for web frontend"
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Schema
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Testplan
-	TAPPERFROMGIT=$(TAPPERFROMGIT) $(PREPAREPERLMODULE) Tapper::Reports::Web
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Schema
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Testplan
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Reports::Web
 	cp $(STARTERKITDIR)/usecases/kernel_build.mpc $(USECASEDIR)/
 	cp $(STARTERKITDIR)/usecases/tests.yml   $(USECASEDIR)/
 	cp $(STARTERKITDIR)/etc/apache2/conf.d/tapper_reports_web.conf /etc/apache2/conf.d/

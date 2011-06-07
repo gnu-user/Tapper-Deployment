@@ -1,6 +1,8 @@
 #! /bin/bash
 
 export TAPPERFROMGIT
+export GITPREFIXTAPPERLIBS
+export GITPREFIXTESTSUITES
 
 BIN=/opt/tapper/bin
 mkdir -p $BIN

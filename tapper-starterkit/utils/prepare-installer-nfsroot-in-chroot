@@ -3,6 +3,8 @@
 set -x
 
 export TAPPERFROMGIT
+export GITPREFIXTAPPERLIBS
+export GITPREFIXTESTSUITES
 
 # deactivate network interfaces coming up in NFS root
 insserv -r ifupdown

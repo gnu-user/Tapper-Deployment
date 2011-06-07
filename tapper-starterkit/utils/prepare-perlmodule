@@ -1,6 +1,9 @@
 #! /bin/bash
 
 export TAPPERFROMGIT
+export GITPREFIXTAPPERLIBS
+export GITPREFIXTESTSUITES
+
 export CPUCOUNT=`cat /proc/cpuinfo | grep vendor_id | wc -l`
 export PERLVERSION=5.12.3
 export PERLBREW_ROOT=/opt/tapper/perl
@@ -30,7 +33,7 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         dist=$(echo $module | sed -e 's/::/-/g')
         cd /tmp/
         rm -fr $dist
-        git clone git://wotan/$dist
+        git clone ${GITPREFIXTAPPERLIBS}/$dist
         cd $dist
         perl Makefile.PL
         make

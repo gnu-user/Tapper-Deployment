@@ -3,6 +3,8 @@
 set -x
 
 export TAPPERFROMGIT
+export GITPREFIXTAPPERLIBS
+export GITPREFIXTESTSUITES
 
 # deactivate udev
 insserv -r udev-mtab

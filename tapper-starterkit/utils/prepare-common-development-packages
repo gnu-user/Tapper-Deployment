@@ -3,6 +3,8 @@
 set -x
 
 export TAPPERFROMGIT
+export GITPREFIXTAPPERLIBS
+export GITPREFIXTESTSUITES
 
 apt-get --yes --allow-unauthenticated install patch
 apt-get --yes --allow-unauthenticated install makepatch

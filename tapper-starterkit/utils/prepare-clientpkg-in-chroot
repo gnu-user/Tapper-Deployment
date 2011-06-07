@@ -20,6 +20,8 @@ apt-get --yes --allow-unauthenticated install libyaml-dev
 set -x
 
 export TAPPERFROMGIT
+export GITPREFIXTAPPERLIBS
+export GITPREFIXTESTSUITES
 
 # ===========================================================
 
