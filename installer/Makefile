@@ -33,11 +33,10 @@
 
 # ===== OSRC specific defaults =====
 
-#DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
-DEBIANMIRROR ?= http://alzey/debian/
+DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
 
 # install Tapper libs from Git repositories
-TAPPERFROMGIT ?= 1
+TAPPERFROMGIT ?= 0
 
 # use local starterkit instead of amd64.org
 LOCALSTARTERKIT ?= 1
