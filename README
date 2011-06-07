@@ -10,10 +10,12 @@ New development is mostly happening in Tapper-Deployment, containing
 lots of OSRC specific details, like additional 32bit images, client
 packages, Python installation and much refactoring.
 
-If you plan to fork it for your own deployment, you should set
-TAPPERFROMGIT=0 to not stumble over nonexisting repositories, e.g:
+It is, however, also useful for other users who want to regularly
+upgrade Tapper or follow development from git.
 
-  TAPPERFROMGIT=0 make clientpkgs
+It should work as drop-in replacement for Tapper-Starterkit.
+
+                                 ***
 
 Just calling "make" provides you with an overview of the most common targets:
 
