@@ -976,6 +976,18 @@ api: workingdirs dependencies tapperconfig libdeps optperl
 	insserv tapper_reports_api_daemon
 	/etc/init.d/tapper_reports_api_daemon restart
 
+action: workingdirs dependencies tapperconfig libdeps optperl
+#
+# start scripts for Tapper::Action
+#
+	@echo "########## start scripts for Tapper::Action"
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Config
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Action
+	cp $(STARTERKITDIR)/etc/init.d/tapper_action_daemon /etc/init.d/
+	chmod 755 /etc/init.d/tapper_action_daemon
+	insserv tapper_action_daemon
+	/etc/init.d/tapper_action_daemon restart
+
 mcp: workingdirs dependencies tapperconfig libdeps optperl
 #
 # start scripts for MCP
