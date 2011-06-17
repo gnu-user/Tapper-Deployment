@@ -163,6 +163,7 @@ help:
 	@echo "  make api              -- update Tapper::Reports::API"
 	@echo "  make receiver         -- update Tapper::Reports::Receiver"
 	@echo "  make action           -- update Tapper::Action"
+	@echo "  make testplan         -- update Testplan"
 	@echo "  make nfsrootperl      -- update Tapper::Installer & friends in nfsroot"
 	@echo "  make clientpkgs       -- create client packages (64bit + 32bit)"
 	@echo "  make clientpkgs++     -- update client packages (64bit + 32bit)"
@@ -968,6 +969,12 @@ receiver: workingdirs dependencies tapperconfig libdeps optperl
 cli: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::CLI
 
+schema: workingdirs dependencies tapperconfig libdeps optperl
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Schema
+
+testplan: workingdirs dependencies tapperconfig libdeps optperl
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Testplan
+
 api: workingdirs dependencies tapperconfig libdeps optperl
 #
 # start scripts for reports-api
@@ -1013,13 +1020,11 @@ mcpmsgreceiver: workingdirs dependencies tapperconfig libdeps optperl
 	insserv tapper_mcp_msg_receiver_daemon
 	/etc/init.d/tapper_mcp_msg_receiver_daemon restart
 
-web: workingdirs dependencies tapperconfig libdeps optperl
+web: workingdirs dependencies tapperconfig libdeps optperl testplan
 #
 # start scripts for web frontend
 #
 	@echo "########## start scripts for web frontend"
-	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Schema
-	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Testplan
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Reports::Web
 	cp $(STARTERKITDIR)/usecases/kernel_build.mpc $(USECASEDIR)/
 	cp $(STARTERKITDIR)/usecases/tests.yml   $(USECASEDIR)/
