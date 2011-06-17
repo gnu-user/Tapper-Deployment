@@ -965,7 +965,9 @@ receiver: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Reports::Receiver
 	cp $(STARTERKITDIR)/etc/init.d/tapper_reports_receiver_daemon /etc/init.d/
 	insserv tapper_reports_receiver_daemon
-	/etc/init.d/tapper_reports_receiver_daemon restart
+	/etc/init.d/tapper_reports_receiver_daemon stop
+	sleep 5
+	/etc/init.d/tapper_reports_receiver_daemon start
 	sleep 2
 
 cli: workingdirs dependencies tapperconfig libdeps optperl
