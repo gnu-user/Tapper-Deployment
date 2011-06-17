@@ -971,6 +971,9 @@ receiver: workingdirs dependencies tapperconfig libdeps optperl
 cli: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::CLI
 
+harness: workingdirs dependencies tapperconfig libdeps optperl
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::TAP::Harness
+
 schema: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Schema
 
