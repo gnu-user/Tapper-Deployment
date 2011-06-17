@@ -182,6 +182,8 @@ help:
 	@echo "  make mcpmsgreceiver   -- MCP-MessageReceiver"
 	@echo "                           => only do if *REALLY* needed"
 	@echo "                              because it risks MCP persistence!"
+	@echo "  make schema-upgrade   -- run DB schema upgrade scripts"
+	@echo "                           => after 'make schema' with structural changes"
 	@echo ""
 	@echo "Other targets:"
 	@echo "--------------"
@@ -971,6 +973,17 @@ cli: workingdirs dependencies tapperconfig libdeps optperl
 
 schema: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Schema
+
+schema-upgrade: schema cli
+	-$(PERL) $(PERLBIN)/tapper-db-deploy upgrade --db ReportsDB
+	-$(PERL) $(PERLBIN)/tapper-db-deploy upgrade --db TestrunDB
+	/etc/init.d/tapper_reports_receiver_daemon restart
+	/etc/init.d/tapper_reports_api_daemon restart
+	/etc/init.d/tapper_action_daemon restart
+	/etc/init.d/tapper_mcp_daemon restart
+	/etc/init.d/apache2 restart
+	-### Explicitely do *not* restart tapper_mcp_msg_receiver_daemon!
+	-### This has to be done manually to ensure a human thinks about it.
 
 testplan: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Testplan
