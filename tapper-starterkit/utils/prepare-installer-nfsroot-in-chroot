@@ -61,5 +61,3 @@ cp /tmp/tapper-starterkit/misc/MAKEDEV /dev/MAKEDEV
 chmod +x /dev/MAKEDEV
 cd /dev
 ./MAKEDEV generic
-
-
