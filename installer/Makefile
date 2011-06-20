@@ -123,6 +123,9 @@ PYTHONDIR=/opt/tapper/python
 PYTHONBIN=$(PYTHONDIR)/bin
 PYTHONPREPARE=prepare-optpython
 
+### opentftpd
+OPENTFTPDURL=http://downloads.sourceforge.net/project/tftp-server/tftp%20server%20single%20port/opentftpspV1.65.tar.gz
+
 # Debian automatic install
 APTGETOPTIONS=-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --yes
 APTGET=DEBIAN_FRONTEND=noninteractive; export DEBIAN_FRONTEND ; apt-get $(APTGETOPTIONS)
@@ -869,6 +872,26 @@ libdeps:
 	$(APTGET) install apache2
 	$(APTGET) install libapache2-mod-fcgid
 
+opentftpd:
+#
+# Prepare CPAN libs
+#
+	cd $(TMP)
+	curl -z$(TMP)/opentftpd.tgz -L $(OPENTFTPDURL) -o $(TMP)/opentftpd.tgz
+	rm -fr $(TMP)/opentftp
+	cd $(TMP) ; tar xzf opentftpd.tgz
+	cp /opt/opentftp/opentftpd /opt/opentftp/opentftpd_`date +%Y%m%d%H%M`
+	rsync -rc $(TMP)/opentftp/ /opt/opentftp/
+	ln -sf /opt/opentftp/rc.opentftp /etc/init.d/opentftp
+	insserv opentftp
+	-# We do not use atftp anymore as it can not serve big files (like images)
+	-# This fragile opentftpd fiddling is not nice, we know...
+	-/etc/init.d/atftpd stop
+	sleep 2
+	/etc/init.d/opentftp stop
+	sleep 2
+	/etc/init.d/opentftp start
+
 perlpkgs:
 #
 # Prepare CPAN libs
@@ -1049,7 +1072,10 @@ web: workingdirs dependencies tapperconfig libdeps optperl testplan
 	cp $(STARTERKITDIR)/etc/apache2/conf.d/tapper_reports_web.conf /etc/apache2/conf.d/
 	/etc/init.d/apache2 restart
 
-tftpserver:
+# used to be atftp originally
+tftpserver: opentftpd
+
+atftp:
 #
 # Install an TFTP server and export $(DATATAPPER)
 #
