@@ -171,7 +171,7 @@ help:
 	@echo "  make receiver         -- update Tapper::Reports::Receiver"
 	@echo "  make action           -- update Tapper::Action"
 	@echo "  make testplan         -- update Testplan"
-	@echo "  make nfsrootperl      -- update Tapper::Installer & friends in nfsroot"
+	@echo "  make nfsroot++        -- update Tapper::Installer & friends in nfsroot"
 	@echo "  make clientpkgs       -- create client packages (64bit + 32bit)"
 	@echo "  make clientpkgs++     -- update client packages (64bit + 32bit)"
 	@echo "  make baseimages       -- create base images     (64bit + 32bit)"
@@ -436,7 +436,7 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPARE)
 
-nfsrootperl: installerchrootperl nfsrootdir
+nfsroot++: installerchrootperl nfsrootdir
 
 installerchrootperl: installerchroot
 	@echo "########## prepare subdirs"
