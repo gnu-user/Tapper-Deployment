@@ -5,6 +5,7 @@ set -x
 export TAPPERFROMGIT
 export GITPREFIXTAPPERLIBS
 export GITPREFIXTESTSUITES
+export PYTHONSTATICTWEAKS
 
 /tmp/tapper-starterkit/utils/prepare-common-development-packages
 /tmp/tapper-starterkit/utils/prepare-perlmodule Tapper::Installer
