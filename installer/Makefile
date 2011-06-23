@@ -896,6 +896,11 @@ opentftpd:
 	sleep 2
 	/etc/init.d/opentftp start
 
+# ** TODO hardwaredb changes trigger "ssh root@tapper -c make hwdbsync"
+hwdbsync:
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::HardwareDB
+	$(PERLBIN)/hardwaredb_transfer
+
 perlpkgs:
 #
 # Prepare CPAN libs
