@@ -39,7 +39,9 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         perl Makefile.PL
         make
         make test
-        make install
+        DISTDIR=$(make distdir 2>&1 | grep 'rm -rf ' | cut -d" " -f3-)
+        cd $DISTDIR
+        $CPAN .
     done
 fi
 
