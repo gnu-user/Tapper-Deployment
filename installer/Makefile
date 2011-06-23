@@ -460,8 +460,12 @@ nfsroot++: installerchrootperl nfsrootdir
 # ==============================================================
 
 baseimage64chroot: dependencies $(BASEIMAGE64CHROOT)/etc/log4perl.cfg
+# always update starterkit for subsequent targets
+	cd $(BASEIMAGE64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 
 baseimage32chroot: dependencies $(BASEIMAGE32CHROOT)/etc/log4perl.cfg
+# always update starterkit for subsequent targets
+	cd $(BASEIMAGE32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 
 $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	@echo "########################################################"
