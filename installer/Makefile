@@ -415,6 +415,7 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	echo 'ramfs /var/run   ramfs defaults 0 0' >> $(INSTALLERCHROOT)/etc/fstab
 	echo 'ramfs /var/spool ramfs defaults 0 0' >> $(INSTALLERCHROOT)/etc/fstab
 	echo 'ramfs /var/lib/nfs ramfs defaults 0 0' >> $(INSTALLERCHROOT)/etc/fstab
+	echo 'tmpfs /mnt       tmpfs rw,size=4096k 2 0' >> $(INSTALLERCHROOT)/etc/fstab
 #
 ### configure NFS working directory
 #
