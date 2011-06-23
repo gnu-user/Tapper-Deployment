@@ -151,7 +151,6 @@ CLEANFILESCHROOTNFSROOT    = $(INSTALLERCHROOT)
 CLEANFILESCHROOTBASEIMAGES = $(BASEIMAGE64CHROOT) $(BASEIMAGE32CHROOT)
 CLEANFILESCHROOTCLIENTPKGS = $(CLIENTPKG64CHROOT) $(CLIENTPKG32CHROOT)
 
-
 LOCALCLEANFILES=$(TMP)/$(STARTERKIT) \
                 $(STARTERKITDIR) \
                 $(DISTROPREFSDIR) \
@@ -436,8 +435,6 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPARE)
 
-nfsroot++: installerchrootperl nfsrootdir
-
 installerchrootperl: installerchroot
 	@echo "########## prepare subdirs"
 	-umount $(INSTALLERCHROOT)/sys
@@ -448,6 +445,9 @@ installerchrootperl: installerchroot
 	@echo "########## run remaining configuration from inside the chroot"
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPAREPERLMODULES)
+
+nfsroot++: installerchrootperl nfsrootdir
+
 
 # ==============================================================
 # *
