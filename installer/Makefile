@@ -996,6 +996,10 @@ receiver: workingdirs dependencies tapperconfig libdeps optperl
 cli: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::CLI
 
+# OSRC specific - do not expect that on CPAN
+hardwaredb: workingdirs dependencies tapperconfig libdeps optperl
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::HardwareDB
+
 harness: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::TAP::Harness
 
