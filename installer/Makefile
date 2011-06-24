@@ -38,6 +38,10 @@ DEBIANMIRROR ?= http://ftp.de.debian.org/debian/
 # install Tapper libs from Git repositories
 TAPPERFROMGIT ?= 0
 
+# build Python with some tweaks to static/shared modules
+# (urrently only used for the baseimages/clientpkgs [tapper-starterkit/utils/prepare-baseimage-in-chroot])
+PYTHONSTATICTWEAKS ?= 0
+
 GITPREFIXTAPPERLIBS ?= git://github.com/amd
 GITPREFIXTESTSUITES ?= git://wotan
 
@@ -147,7 +151,6 @@ CLEANFILESCHROOTNFSROOT    = $(INSTALLERCHROOT)
 CLEANFILESCHROOTBASEIMAGES = $(BASEIMAGE64CHROOT) $(BASEIMAGE32CHROOT)
 CLEANFILESCHROOTCLIENTPKGS = $(CLIENTPKG64CHROOT) $(CLIENTPKG32CHROOT)
 
-
 LOCALCLEANFILES=$(TMP)/$(STARTERKIT) \
                 $(STARTERKITDIR) \
                 $(DISTROPREFSDIR) \
@@ -167,7 +170,7 @@ help:
 	@echo "  make receiver         -- update Tapper::Reports::Receiver"
 	@echo "  make action           -- update Tapper::Action"
 	@echo "  make testplan         -- update Testplan"
-	@echo "  make nfsrootperl      -- update Tapper::Installer & friends in nfsroot"
+	@echo "  make nfsroot++        -- update Tapper::Installer & friends in nfsroot"
 	@echo "  make clientpkgs       -- create client packages (64bit + 32bit)"
 	@echo "  make clientpkgs++     -- update client packages (64bit + 32bit)"
 	@echo "  make baseimages       -- create base images     (64bit + 32bit)"
@@ -412,6 +415,7 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	echo 'ramfs /var/run   ramfs defaults 0 0' >> $(INSTALLERCHROOT)/etc/fstab
 	echo 'ramfs /var/spool ramfs defaults 0 0' >> $(INSTALLERCHROOT)/etc/fstab
 	echo 'ramfs /var/lib/nfs ramfs defaults 0 0' >> $(INSTALLERCHROOT)/etc/fstab
+	echo 'tmpfs /mnt       tmpfs rw,size=4096k 2 0' >> $(INSTALLERCHROOT)/etc/fstab
 #
 ### configure NFS working directory
 #
@@ -432,8 +436,6 @@ $(INSTALLERCHROOT)/etc/log4perl.cfg:
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPARE)
 
-nfsrootperl: installerchrootperl nfsrootdir
-
 installerchrootperl: installerchroot
 	@echo "########## prepare subdirs"
 	-umount $(INSTALLERCHROOT)/sys
@@ -444,6 +446,9 @@ installerchrootperl: installerchroot
 	@echo "########## run remaining configuration from inside the chroot"
 	cd $(INSTALLERCHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 	$(SCRIPTENVIRONMENT) chroot $(INSTALLERCHROOT) /tmp/tapper-starterkit/utils/$(INSTALLERCHROOTPREPAREPERLMODULES)
+
+nfsroot++: installerchrootperl nfsrootdir
+
 
 # ==============================================================
 # *
@@ -456,8 +461,12 @@ installerchrootperl: installerchroot
 # ==============================================================
 
 baseimage64chroot: dependencies $(BASEIMAGE64CHROOT)/etc/log4perl.cfg
+# always update starterkit for subsequent targets
+	cd $(BASEIMAGE64CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 
 baseimage32chroot: dependencies $(BASEIMAGE32CHROOT)/etc/log4perl.cfg
+# always update starterkit for subsequent targets
+	cd $(BASEIMAGE32CHROOT)/tmp/ ; tar xzf $(TMP)/$(STARTERKIT)
 
 $(BASEIMAGE64CHROOT)/etc/log4perl.cfg:
 	@echo "########################################################"
@@ -892,6 +901,11 @@ opentftpd:
 	sleep 2
 	/etc/init.d/opentftp start
 
+# ** TODO hardwaredb changes trigger "ssh root@tapper -c make hwdbsync"
+hwdbsync:
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::HardwareDB
+	$(PERLBIN)/hardwaredb_transfer
+
 perlpkgs:
 #
 # Prepare CPAN libs
@@ -1074,6 +1088,7 @@ web: workingdirs dependencies tapperconfig libdeps optperl testplan
 	cp $(STARTERKITDIR)/usecases/kernel_build.mpc $(USECASEDIR)/
 	cp $(STARTERKITDIR)/usecases/tests.yml   $(USECASEDIR)/
 	cp $(STARTERKITDIR)/etc/apache2/conf.d/tapper_reports_web.conf /etc/apache2/conf.d/
+	ln -sf $(METAREPORTSDIR) $$(dirname $$($(PERLBIN)/perldoc -l Tapper::Reports::Web))/Web/root/tapper/static/
 	/etc/init.d/apache2 restart
 
 # used to be atftp originally
