@@ -41,7 +41,7 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         make test
         DISTDIR=$(make distdir 2>&1 | grep 'rm -rf ' | cut -d" " -f3-)
         cd $DISTDIR
-        $CPAN .
+        $CPAN -f .
     done
 fi
 
