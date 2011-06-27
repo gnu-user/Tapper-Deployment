@@ -892,7 +892,8 @@ opentftpd:
 	cd $(TMP)/opentftp/ ; g++ opentftpd.cpp -lpthread -o opentftpd
 	-cp /opt/opentftp/opentftpd /opt/opentftp/opentftpd_`date +%Y%m%d%H%M`
 	rsync -rc $(TMP)/opentftp/ /opt/opentftp/
-	ln -sf /opt/opentftp/rc.opentftp /etc/init.d/opentftp
+	cp $(STARTERKITDIR)/etc/opentftp.ini /etc/
+	cp $(STARTERKITDIR)/etc/init.d/opentftp /etc/init.d/
 	insserv opentftp
 	-# We do not use atftp anymore as it can not serve big files (like images)
 	-# This fragile opentftpd fiddling is not nice, we know...
