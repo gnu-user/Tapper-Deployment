@@ -889,7 +889,8 @@ opentftpd:
 	curl -z$(TMP)/opentftpd.tgz -L $(OPENTFTPDURL) -o $(TMP)/opentftpd.tgz
 	rm -fr $(TMP)/opentftp
 	cd $(TMP) ; tar xzf opentftpd.tgz
-	cp /opt/opentftp/opentftpd /opt/opentftp/opentftpd_`date +%Y%m%d%H%M`
+	cd $(TMP)/opentftp/ ; g++ opentftpd.cpp -lpthread -o opentftpd
+	-cp /opt/opentftp/opentftpd /opt/opentftp/opentftpd_`date +%Y%m%d%H%M`
 	rsync -rc $(TMP)/opentftp/ /opt/opentftp/
 	ln -sf /opt/opentftp/rc.opentftp /etc/init.d/opentftp
 	insserv opentftp
