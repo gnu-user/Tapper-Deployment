@@ -1093,8 +1093,17 @@ web: workingdirs dependencies tapperconfig libdeps optperl testplan
 	ln -sf $(METAREPORTSDIR) $$(dirname $$($(PERLBIN)/perldoc -l Tapper::Reports::Web))/Web/root/tapper/static/
 	/etc/init.d/apache2 restart
 
-# used to be atftp originally
-tftpserver: opentftpd
+# We get mental on this topic!
+#
+# Sometimes "atftp" stops working with big files.
+#
+# Then we use "opentftp", which gets broken exactly once we were happy
+# with it.
+#
+# So just choose one of those two here that works for you:
+#   atftp
+#   opentftpd
+tftpserver: atftp
 
 atftp:
 #
