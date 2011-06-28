@@ -38,7 +38,7 @@ if [ "x1" == "x$TAPPERFROMGIT" ] ; then
         cd $dist
         perl Makefile.PL
         make
-        make test
+        make manifest
         DISTDIR=$(make distdir 2>&1 | grep 'rm -rf ' | cut -d" " -f3-)
         cd $DISTDIR
         $CPAN -f .
