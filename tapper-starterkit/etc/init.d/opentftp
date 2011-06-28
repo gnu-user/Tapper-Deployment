@@ -5,7 +5,7 @@
 
 ##### Modify 3 line below for location of executive and other files #####
 EXEFILE=/opt/opentftp/opentftpd
-INIFILE=/opt/opentftp.ini
+INIFILE=/etc/opentftp.ini
 LOGFILE=/opt/opentftp/log/opentftp%Y%m%d.log
 ##### There is generally no need to modify anything below this line #####
 
