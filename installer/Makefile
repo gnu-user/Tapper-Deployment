@@ -1064,6 +1064,7 @@ mcp: workingdirs dependencies tapperconfig libdeps optperl
 #
 	@echo "########## start scripts for MCP"
 	PERL_AUTOINSTALL="--defaultdeps" TEST_JOBS=$(CPUCOUNT) $(CPAN) App::Daemon
+	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::Producer
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::MCP
 	cp $(STARTERKITDIR)/etc/init.d/tapper_mcp_daemon /etc/init.d/
 	insserv tapper_mcp_daemon
