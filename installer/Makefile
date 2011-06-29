@@ -1068,7 +1068,9 @@ mcp: workingdirs dependencies tapperconfig libdeps optperl
 	$(SCRIPTENVIRONMENT) $(PREPAREPERLMODULE) Tapper::MCP
 	cp $(STARTERKITDIR)/etc/init.d/tapper_mcp_daemon /etc/init.d/
 	insserv tapper_mcp_daemon
-	/etc/init.d/tapper_mcp_daemon restart
+	/etc/init.d/tapper_mcp_daemon stop
+	ps aux | awk '/mcp-daemon/ {print $$2}' | xargs kill $$1
+	/etc/init.d/tapper_mcp_daemon start
 
 mcpmsgreceiver: workingdirs dependencies tapperconfig libdeps optperl
 #
