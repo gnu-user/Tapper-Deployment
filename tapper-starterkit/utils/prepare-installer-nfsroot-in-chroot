@@ -10,13 +10,16 @@ export PYTHONSTATICTWEAKS
 # deactivate network interfaces coming up in NFS root
 insserv -r ifupdown
 
-# deactivate udev
+# deactivate udev which makes trouble on bleeding edge hardware
 insserv -r udev-mtab
 insserv -r udev
 
 # deactivate hwclock
 insserv -r hwclock
 insserv -r hwclockfirst
+
+# deactivate misc services not need in installer
+insserv -r cron
 
 # setup locales
 apt-get --yes --allow-unauthenticated install locales
